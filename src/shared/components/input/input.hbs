@@ -1,0 +1,12 @@
+<div class="input-wrapper">
+  {{#if labelText}}<label for={{id}} class="label">{{labelText}}</label>{{/if}}
+  <input
+    type={{type}}
+    id={{id}}
+    name={{name}}
+    class="input {{#if additionalClass}}{{additionalClass}}{{/if}}"
+    {{#if placeholder}}placeholder={{placeholder}}{{/if}}
+    {{#if value}}value={{value}}{{/if}}
+    {{#if disabled}}disabled={{disabled}}{{/if}}
+    />
+</div>

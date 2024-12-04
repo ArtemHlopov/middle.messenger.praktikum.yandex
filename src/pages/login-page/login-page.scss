@@ -1,0 +1,23 @@
+@use "../../style.scss" as style;
+
+.form-title {
+  @include style.text($size: 20px, $line-height: 20px);
+  text-align: center;
+  margin-bottom: 40px;
+}
+.inputs-block {
+  @include style.flex($direction: column, $gap: 16px);
+  margin-bottom: 160px;
+
+  & .input {
+    border-bottom: 1px solid style.$blue;
+    padding-bottom: 7px;
+  }
+  & .label {
+    @include style.text($size: 9px, $line-height: 9px);
+  }
+}
+
+.buttons-block {
+  @include style.flex($direction: column, $gap: 15px);
+}

@@ -1,0 +1,7 @@
+@use "../../style.scss" as style;
+
+.client-error-page-wrapper {
+  width: 180px;
+  @include style.flex($direction: column, $justify: center, $align: center);
+  text-align: center;
+}
