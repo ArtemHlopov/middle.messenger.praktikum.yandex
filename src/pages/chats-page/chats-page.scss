@@ -20,8 +20,10 @@
     margin-bottom: 15px;
     padding: 0 10px;
 
-    .button-wrapper {
-      justify-content: flex-end;
+    .search-block-links {
+      @include style.flex($direction: row, $justify: space-between);
+
+      width: 100%;
     }
 
     .button {

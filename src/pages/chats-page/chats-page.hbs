@@ -1,7 +1,11 @@
 <div class="chats-page-wrapper">
     <div class="chat-list-block">
         <div class="search-block">
+          <nav class="search-block-links">
+            {{> Button link="404" text="404"}}
+            {{> Button link="505" text="505"}}
             {{> Button link="profile" text="Profile >"}}
+          </nav>
             {{> Input type="text" id="search-input" name="search-input" placeholder="Search" additionalClass="input-filled"}}
         </div>
         <ul class="chat-list">
