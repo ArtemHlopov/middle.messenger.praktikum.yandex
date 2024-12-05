@@ -2,12 +2,16 @@
 
 .input-wrapper {
   @include style.flex($direction: column, $gap: 8px);
+
   width: 100%;
+
   .label {
     color: style.$grey;
   }
 }
+
 .input {
-  @include style.text();
+  @include style.text;
+
   width: 100%;
 }
