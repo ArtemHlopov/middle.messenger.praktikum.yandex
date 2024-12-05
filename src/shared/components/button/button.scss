@@ -6,12 +6,14 @@
 
 .button {
   @include style.text($size: 11px, $line-height: 11px, $color: style.$blue);
-  text-decoration: none;
   @include style.flex($justify: center);
+
+  text-decoration: none;
 }
 
 .button-filled {
-  @include style.text();
+  @include style.text;
+
   display: block;
   width: 100%;
   background-color: style.$blue;

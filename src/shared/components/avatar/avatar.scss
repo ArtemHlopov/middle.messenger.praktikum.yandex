@@ -13,6 +13,7 @@
 
 .avatar-large {
   @include style.flex($justify: center, $align: center);
+
   width: 130px;
   height: 130px;
   border-radius: 50%;
