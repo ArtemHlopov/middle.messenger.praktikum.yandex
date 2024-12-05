@@ -51,11 +51,11 @@
     padding: 10px 0;
     border-bottom: 1px solid style.$list-border;
 
-    a {
+    button {
       @include style.text($color: style.$blue);
     }
 
-    &:last-child a {
+    &:last-child button {
       color: style.$red;
     }
   }

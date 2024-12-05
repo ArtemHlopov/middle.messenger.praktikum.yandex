@@ -10,7 +10,7 @@ function renderPage(page: string) {
   const app = document.querySelector<HTMLDivElement>("#app")!;
   let template;
   if (!pagesList[page]) {
-    template = Handlebars.compile(pagesList["505"]);
+    template = Handlebars.compile(pagesList["404"]);
   } else {
     template = Handlebars.compile(pagesList[page]);
   }
@@ -24,17 +24,21 @@ function registerPartial(partials: TemplatesData): void {
   );
 }
 
-function handleNavigation() {
-  const route = window.location.hash.slice(1);
-  if (window.location.pathname.length > 1 && !window.location.hash) {
-    renderPage("404");
-  } else if (window.location.pathname.length > 1) {
-    window.location.pathname = "/";
-    renderPage(route);
-  } else {
-    renderPage(route || "login");
-  }
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const initialPage = window.location.pathname.slice(1) || "login";
+  renderPage(initialPage);
+});
 
-window.addEventListener("load", handleNavigation);
-window.addEventListener("hashchange", handleNavigation);
+document.addEventListener("click", (e: Event) => {
+  const target = e.target as HTMLElement;
+  const link = target.getAttribute("page-link");
+  if (link) {
+    window.history.pushState({}, "", `/${link}`);
+    renderPage(link);
+  }
+});
+
+window.addEventListener("popstate", () => {
+  const currentPage = window.location.pathname.slice(1) || "login";
+  renderPage(currentPage);
+});

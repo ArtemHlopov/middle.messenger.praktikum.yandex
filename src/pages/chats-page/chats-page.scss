@@ -20,10 +20,12 @@
     margin-bottom: 15px;
     padding: 0 10px;
 
+    .button-wrapper {
+      justify-content: flex-end;
+    }
+
     .button {
       @include style.text($size: 12px, $line-height: 12px, $color: style.$grey);
-
-      justify-content: flex-end;
     }
 
     input {
