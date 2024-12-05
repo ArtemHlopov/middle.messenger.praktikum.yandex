@@ -64,7 +64,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: color(rgba 0, 0, 0, 50%);
+    background-color: rgba($color: style.$black, $alpha: 50%);
     color: white;
     border-radius: 50%;
     opacity: 0;
