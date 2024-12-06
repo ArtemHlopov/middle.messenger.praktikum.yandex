@@ -1,0 +1,48 @@
+@use "../../../style.scss" as style;
+
+.chat-list-item-wrapper {
+  @include style.flex($justify: space-between);
+
+  padding: 12px 10px;
+  border-bottom: 1px solid style.$list-border;
+  cursor: pointer;
+  height: 100%;
+
+  &.active {
+    background-color: style.$msg-blue;
+  }
+}
+
+.chat-info {
+  flex: 1;
+
+  .chat-title {
+    @include style.text($weight: 600);
+
+    margin-bottom: 4px;
+  }
+
+  .chat-description {
+    @include style.text($size: 12px, $line-height: 15px, $color: style.$grey);
+  }
+}
+
+.chat-details {
+  @include style.flex($direction: column, $align: flex-end, $gap: 18px);
+
+  .date {
+    @include style.text($size: 9px, $color: style.$grey);
+  }
+
+  .unread-messages {
+    @include style.text($size: 11px, $line-height: 12px);
+    @include style.flex($justify: center, $align: center);
+
+    text-align: right;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: style.$blue;
+    color: style.$white;
+  }
+}

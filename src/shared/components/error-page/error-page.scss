@@ -1,0 +1,13 @@
+@use "../../../style.scss" as style;
+
+.error-page-title {
+  @include style.text($size: 40px, $line-height: 40px);
+
+  margin-bottom: 20px;
+}
+
+.error-page-text {
+  @include style.text($size: 20px, $line-height: 20px);
+
+  margin-bottom: 70px;
+}

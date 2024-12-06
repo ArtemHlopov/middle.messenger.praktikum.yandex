@@ -1,0 +1,11 @@
+<div class="chat-list-item-wrapper {{#if customClass}}{{customClass}}{{/if}}" chat-id={{id}}>
+  {{> Avatar avatarLink=avatar additionalClass="avatar-small"}}
+  <div class="chat-info">
+    <h4 class="chat-title">{{name}}</h4>
+    <div class="chat-description">{{dialog}}</div>
+  </div>
+  <div class="chat-details">
+      <div class="date">{{date}}</div>
+      {{#if unreadCount}}<div class="unread-messages"><span>{{unreadCount}}</span></div>{{/if}}
+  </div>
+</div>

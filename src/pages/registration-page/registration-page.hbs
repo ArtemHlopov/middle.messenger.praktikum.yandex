@@ -1,0 +1,16 @@
+<form class="auth-block">
+  <h2 class="h2 form-title">Registration</h2>
+  <div class="inputs-block">
+    {{> Input type="text" id="email" name="email" labelText="Email" placeholder="example@example.com"}}
+    {{> Input type="text" id="login" name="login" labelText="Login" placeholder="example"}}
+    {{> Input type="text" id="first_name" name="first_name" labelText="First name" placeholder="example"}}
+    {{> Input type="text" id="second_name" name="second_name" labelText="Second name" placeholder="example"}}
+    {{> Input type="text" id="phone" name="phone" labelText="Phone" placeholder="+7-777-777-77-77"}}
+    {{> Input type="password" id="password" name="password" labelText="Password" placeholder="example"}}
+    {{> Input type="password" id="password_verify" name="password_verify" labelText="Password (again)" placeholder="example"}}
+  </div>
+  <div class="buttons-block">
+    {{> Button link="chats" text="Create account" additionalClass="button-filled"}}
+    {{> Button link="login" text="Sign in"}}
+  </div>
+</form> 

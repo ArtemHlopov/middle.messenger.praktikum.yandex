@@ -1,0 +1,11 @@
+<form class="auth-block">
+  <h2 class="form-title">Login</h2>
+  <div class="inputs-block login-inputs">
+    {{> Input type="text" id="user-login" name="login" labelText="Login" placeholder="example@example.com"}}
+    {{> Input type="password" id="user-password" name="password" labelText="Password" placeholder="example"}}
+  </div>
+  <div class="buttons-block">
+    {{> Button link="chats" text="Sign in" additionalClass="button-filled"}}
+    {{> Button link="registration" text="Create account"}}
+  </div>
+</form>
