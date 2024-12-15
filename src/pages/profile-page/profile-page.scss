@@ -1,0 +1,62 @@
+@use "../../style.scss" as style;
+
+.profile-page-wrapper {
+  @include style.profile-page;
+
+  .profile-title {
+    @include style.text($weight: 600, $size: 18px, $line-height: 18px);
+
+    margin-bottom: 60px;
+  }
+
+  .avatar-wrapper {
+    margin-bottom: 95px;
+  }
+
+  .profile-page-form {
+    width: 100%;
+
+    .profile-form-control {
+      padding: 10px 0;
+
+      label {
+        @include style.text;
+
+        white-space: nowrap;
+      }
+    }
+
+    .profile-form-control:not(:last-child) {
+      border-bottom: 1px solid style.$list-border;
+    }
+
+    .profile-form-control .input-wrapper {
+      @include style.flex($justify: space-between);
+    }
+
+    input {
+      @include style.text($color: style.$grey);
+
+      text-align: right;
+    }
+  }
+}
+
+.form-buttons-block {
+  margin-top: 60px;
+
+  .button-wrapper {
+    @include style.flex;
+
+    padding: 10px 0;
+    border-bottom: 1px solid style.$list-border;
+
+    button {
+      @include style.text($color: style.$blue);
+    }
+
+    &:last-child button {
+      color: style.$red;
+    }
+  }
+}

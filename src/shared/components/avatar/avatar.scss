@@ -1,0 +1,21 @@
+@use "../../../style.scss" as style;
+
+.avatar-wrapper {
+  margin-right: 10px;
+}
+
+.avatar-field {
+  width: 47px;
+  height: 47px;
+  border-radius: 50%;
+  background-color: style.$bgc-grey;
+}
+
+.avatar-large {
+  @include style.flex($justify: center, $align: center);
+
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background-color: style.$bgc-grey;
+}

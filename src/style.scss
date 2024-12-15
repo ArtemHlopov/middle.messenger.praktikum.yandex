@@ -1,0 +1,78 @@
+$white: #fff;
+$black: #1e1e1e;
+$red: #ff2f2f;
+$blue: #3369f3;
+$grey: #999;
+$bgc-grey: #efefef;
+$msg-grey: #f8f8f8;
+$msg-blue: #e4edfd;
+$bgc-list: #fbfbfb;
+$list-border: #eaeaea;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@mixin text($weight: 500, $size: 13px, $line-height: 13px, $color: $black) {
+  font-family: Inter, sans-serif;
+  font-weight: $weight;
+  font-size: $size;
+  line-height: $line-height;
+  color: $color;
+}
+
+@mixin profile-page {
+  @include flex($direction: column, $align: center);
+
+  padding-top: 60px;
+  min-height: 100dvh;
+  width: 510px;
+}
+
+@mixin flex(
+  $direction: row,
+  $justify: flex-start,
+  $align: flex-start,
+  $gap: 0
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+}
+
+.auth-block {
+  @include flex($direction: column, $justify: center, $align: center, $gap: 0);
+
+  width: 340px;
+  padding: 30px 50px 30px 30px;
+  border-radius: 12px;
+  background-color: $white;
+  box-shadow: 0 0 6px 0 rgba($color: #00000024, $alpha: 100%);
+
+  & > * {
+    width: 100%;
+  }
+}
+
+body {
+  @include flex($justify: center, $align: center);
+
+  height: 100dvh;
+}
+
+label {
+  color: $grey;
+}
+
+input {
+  border: none;
+  outline: none;
+
+  &:disabled {
+    background: none;
+  }
+}
