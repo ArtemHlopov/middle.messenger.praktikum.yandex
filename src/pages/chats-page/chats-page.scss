@@ -140,7 +140,7 @@
 }
 
 .new-message-block {
-  @include style.flex($gap: 10px);
+  @include style.flex($gap: 10px, $justify: space-between);
 
   margin: 11px 0;
 
@@ -162,7 +162,7 @@
     border: none;
 
     &.add-file {
-      background-image: url("../../../public/add-file.png");
+      background-image: url("/add-file.png");
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -177,4 +177,8 @@
       cursor: pointer;
     }
   }
+}
+
+.profile-form-control {
+  width: 100%;
 }

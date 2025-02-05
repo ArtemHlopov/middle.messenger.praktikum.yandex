@@ -10,7 +10,7 @@
   }
 
   .avatar-wrapper {
-    margin-bottom: 95px;
+    margin-bottom: 30px;
   }
 
   .profile-page-form {
@@ -26,18 +26,19 @@
       }
     }
 
-    .profile-form-control:not(:last-child) {
+    input {
+      @include style.text($color: style.$grey);
+
+      text-align: right;
+    }
+
+    .profile-form-control:not(:last-child) input {
+      padding-bottom: 5px;
       border-bottom: 1px solid style.$list-border;
     }
 
     .profile-form-control .input-wrapper {
       @include style.flex($justify: space-between);
-    }
-
-    input {
-      @include style.text($color: style.$grey);
-
-      text-align: right;
     }
   }
 }
@@ -48,7 +49,6 @@
   .button-wrapper {
     @include style.flex;
 
-    padding: 10px 0;
     border-bottom: 1px solid style.$list-border;
 
     button {

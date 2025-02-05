@@ -1,44 +1,39 @@
 import "./style.scss";
-import Handlebars from "handlebars";
+import { PagesNames } from "./shared/models/models";
+import { Block } from "./shared/components/block";
 import { pagesList } from "./pages";
-import * as Partials from "./shared/components";
-import { TemplatesData } from "./shared/models/models";
 
-registerPartial(Partials);
+const root = "#app";
 
-function renderPage(page: string) {
-  const app = document.querySelector<HTMLDivElement>("#app")!;
-  let template;
-  if (!pagesList[page]) {
-    template = Handlebars.compile(pagesList["404"]);
+function initApp(): void {
+  const currentPage = window.location.pathname.slice(1) || PagesNames.login;
+  if (currentPage in pagesList) {
+    render(root, pagesList[currentPage as keyof typeof pagesList]);
   } else {
-    template = Handlebars.compile(pagesList[page]);
+    render(root, pagesList.clientError);
   }
-
-  app.innerHTML = template({});
 }
-
-function registerPartial(partials: TemplatesData): void {
-  Object.keys(partials).forEach((key) =>
-    Handlebars.registerPartial(key, partials[key])
-  );
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  const initialPage = window.location.pathname.slice(1) || "login";
-  renderPage(initialPage);
-});
 
 document.addEventListener("click", (e: Event) => {
   const target = e.target as HTMLElement;
   const link = target.getAttribute("page-link");
-  if (link) {
-    window.history.pushState({}, "", `/${link}`);
-    renderPage(link);
+  if (link && link in pagesList) {
+    render(root, pagesList[link as keyof typeof pagesList]);
   }
 });
 
-window.addEventListener("popstate", () => {
-  const currentPage = window.location.pathname.slice(1) || "login";
-  renderPage(currentPage);
-});
+function render(selector: string, block: Block): Element | null {
+  const root = document.querySelector(selector);
+  const content = block.getContent();
+
+  if (content && root) {
+    root.innerHTML = "";
+    root.appendChild(content);
+  }
+
+  block.dispatchComponentDidMount();
+
+  return root;
+}
+
+initApp();
