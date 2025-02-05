@@ -1,32 +1,13 @@
-<div class="profile-change-page-wrapper">
-  <div class="avatar-block">
-    <label for="avatar" class="avatar">
-        {{> Avatar avatarLink="/Union.png" additionalClass="avatar-large"}}
-    </label>
-    <input id="avatar" name="avatar" type="file">  
-    <div class="avatar-overlay">Change avatar</div>
-  </div>
-  <form class="profile-page-form">
-    <div class="profile-form-control">
-      {{> Input labelText="Email" type="text" id="email" name="email" value="example@example.com"}}
-    </div>
-    <div class="profile-form-control">
-      {{> Input labelText="Login" type="text" id="login" name="login" value="ivanivanov"}}
-    </div>
-    <div class="profile-form-control">
-      {{> Input labelText="First name" type="text" id="first_name" name="first_name" value="Ivan"}}
-    </div>
-    <div class="profile-form-control">
-      {{> Input labelText="Second name" type="text" id="second_name" name="second_name" value="Ivanov"}}
-    </div>
-    <div class="profile-form-control">
-      {{> Input labelText="Nickname" type="text" id="display_name" name="display_name" value="Ivan"}}
-    </div>
-    <div class="profile-form-control">
-      {{> Input labelText="Phone" type="text" id="phone" name="phone" value="+7(909)9673030"}}
-    </div>
-    <div class="form-buttons-block">
-      {{> Button link="chats" text="Save" additionalClass="button-filled"}}
-    </div>
-  </form>
+<div class="avatar-block">
+  <label for="avatar" class="avatar">
+    {{{avatar}}}
+  </label>
+  <input id="avatar" name="avatar" type="file" />
+  <div class="avatar-overlay">Change avatar</div>
 </div>
+<form class="profile-page-form">
+  {{{inputs}}}
+  <div class="form-buttons-block">
+    {{{button}}}
+  </div>
+</form>

@@ -10,6 +10,7 @@
   @include style.text($size: 11px, $line-height: 11px, $color: style.$blue);
   @include style.flex($justify: center);
 
+  padding: 12px 0;
   text-decoration: none;
   border: none;
   background: none;
@@ -23,7 +24,6 @@
   width: 100%;
   background-color: style.$blue;
   color: style.$white;
-  padding: 12px 0;
   text-align: center;
   border-radius: 8px;
 }
