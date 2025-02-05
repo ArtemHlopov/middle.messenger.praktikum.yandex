@@ -1,7 +1,7 @@
 import { BlockProps, Children } from "../models/models";
 import { EventBus } from "./event-bus";
 import { v4 as uuidv4 } from "uuid";
-import Handlebars from "handlebars";
+import * as Handlebars from "handlebars";
 
 export class Block {
   static EVENTS = {
