@@ -3,7 +3,7 @@ import { EventBus } from "./event-bus";
 import { v4 as uuidv4 } from "uuid";
 import * as Handlebars from "handlebars";
 
-export class Block {
+export abstract class Block {
   static EVENTS = {
     INIT: "init",
     FLOW_CDM: "flow:component-did-mount",
