@@ -1,66 +1,56 @@
-<div class="chats-page-wrapper">
-    <div class="chat-list-block">
-        <div class="search-block">
-          <nav class="search-block-links">
-            {{> Button link="404" text="404"}}
-            {{> Button link="505" text="505"}}
-            {{> Button link="profile" text="Profile >"}}
-          </nav>
-            {{> Input type="text" id="search-input" name="search-input" placeholder="Search" additionalClass="input-filled"}}
-        </div>
-        <ul class="chat-list">
-            <li>{{> ChatListItem id="1" name="Andrew" dialog="qwerty-test1" date="17:50" unreadCount=4}}</li>
-            <li>{{> ChatListItem id="2" name="Cinema-club" dialog="qwerty-test2" date="Fr"}}</li>
-            <li>{{> ChatListItem id="3" name="Ilya" dialog="qwerty-test3" date=">Month"}}</li>
-            <li>{{> ChatListItem id="4" name="Vadim" dialog="qwerty-test4" date=">Year" customClass="active"}}</li>
-            <li>{{> ChatListItem id="5" name="Dialogs" dialog="qwerty-test5" date="Yesterday" unreadCount=4}}</li>
-            <li>{{> ChatListItem id="6" name="1, 2, 3" dialog="qwerty-test6" date="03:50"}}</li>
-            <li>{{> ChatListItem id="7" name="Design destroyer" avatar="" dialog="qwerty-test7" date="Mn"}}</li>
-            <li>{{> ChatListItem id="8" name="Day" dialog="qwerty-test8" date="<Week"}}</li>
-            <li>{{> ChatListItem id="9" name="Stas" dialog="qwerty-test9" date=">Week"}}</li>
-            <li>{{> ChatListItem id="10" name="qwerty10" dialog="qwerty-test10" date="Yesterday"}}</li>
-        </ul>
+<div class="chat-list-block">
+  <div class="search-block">
+    <nav class="search-block-links">
+      {{{buttons}}}
+    </nav>
+    {{{searchInput}}}
+  </div>
+  <ul class="chat-list">
+    {{{chats}}}
+  </ul>
+</div>
+<div class="chat-preview-block">
+  <div class="companion-block">
+    <div class="companion-info">
+      {{{avatar}}}
+      <span class="companion-name">Vadim</span>
     </div>
-    <div class="chat-preview-block">
-        <div class="companion-block">
-            <div class="companion-info">
-              {{> Avatar}}
-              <span class="companion-name">Vadim</span>
-            </div>
-            <button class="chat-options">...</button>
-        </div>
-        <div class="current-chat">
-          <div class="message-date">19 june</div>
-          <div class="message-block message-block-left">
-            <div class="message-text message">Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА
-               в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все 
-               знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся
-                на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой.
-               Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не попали. 
-               Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро.
-              <div class="message-time">11:56</div>
-            </div>
-          </div>
-          <div class="message-block message-block-left">
-            <div class="message-text message">
-              <img src="/img-msg.png" alt="screenshot">
-              <div class="message-time">11:56</div>
-            </div>
-          </div>
-          <div class="message-block message-block-right">
-            <div class="message-text message">
-              Круто
-              <div class="message-time">12:00</div>
-            </div>
-          </div>
-          <div class="options-modal"></div>
-          <div class="add-user-modal"></div>
-          <div class="remove-user-modal"></div>
-        </div>
-        <div class="new-message-block">
-          <button class="new-msg-button add-file"></button>
-          {{> Input type="text" id="new-message" name="new-message" placeholder="Message" additionalClass="input-filled"}}
-          <button class="new-msg-button send-message"><span>&#10132;</span></button>
-        </div>
+    <button class="chat-options">...</button>
+  </div>
+  <div class="current-chat">
+    <div class="message-date">19 june</div>
+    <div class="message-block message-block-left">
+      <div class="message-text message">Привет! Смотри, тут всплыл интересный
+        кусок лунной космической истории — НАСА в какой-то момент попросила
+        Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все
+        знаем что астронавты летали с моделью 500 EL — и к слову говоря, все
+        тушки этих камер все еще находятся на поверхности Луны, так как
+        астронавты с собой забрали только кассеты с пленкой. Хассельблад в итоге
+        адаптировал SWC для космоса, но что-то пошло не так и на ракету они так
+        никогда и не попали. Всего их было произведено 25 штук, одну из них
+        недавно продали на аукционе за 45000 евро.
+        <div class="message-time">11:56</div>
+      </div>
     </div>
+    <div class="message-block message-block-left">
+      <div class="message-text message">
+        <img src="/img-msg.png" alt="screenshot" />
+        <div class="message-time">11:56</div>
+      </div>
+    </div>
+    <div class="message-block message-block-right">
+      <div class="message-text message">
+        Круто
+        <div class="message-time">12:00</div>
+      </div>
+    </div>
+    <div class="options-modal"></div>
+    <div class="add-user-modal"></div>
+    <div class="remove-user-modal"></div>
+  </div>
+  <div class="new-message-block">
+    <button class="new-msg-button add-file"></button>
+    {{{sendMsgInput}}}
+    <button class="new-msg-button send-message"><span>&#10132;</span></button>
+  </div>
 </div>

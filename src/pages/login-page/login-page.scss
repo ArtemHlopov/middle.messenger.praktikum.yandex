@@ -10,7 +10,7 @@
 .inputs-block {
   @include style.flex($direction: column, $gap: 16px);
 
-  margin-bottom: 160px;
+  // margin-bottom: 160px;
 
   & .input {
     border-bottom: 1px solid style.$blue;
