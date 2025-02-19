@@ -9,12 +9,12 @@ import { RegistrationPageComponent } from "./registration-page/registration-page
 import { ServerErrorPageComponent } from "./server-error-page/server-error-page";
 
 export const pagesList: TemplatesData = {
-  login: new LoginPageComponent(),
-  registration: new RegistrationPageComponent(),
-  chats: new ChatsPageComponent(),
-  profile: new ProfilePageComponent(),
-  changeProfile: new ProfileChangePageComponent(),
-  changePassword: new ProfilePasswordPageComponent(),
-  clientError: new ClientErrorPageComponent(),
-  serverError: new ServerErrorPageComponent(),
+  login: LoginPageComponent,
+  registration: RegistrationPageComponent,
+  chats: ChatsPageComponent,
+  profile: ProfilePageComponent,
+  changeProfile: ProfileChangePageComponent,
+  changePassword: ProfilePasswordPageComponent,
+  clientError: ClientErrorPageComponent,
+  serverError: ServerErrorPageComponent,
 };
