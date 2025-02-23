@@ -4,11 +4,12 @@ import { default as LoginPage } from "./login-page.hbs?raw";
 import { Block } from "../../shared/components/block";
 import { InputComponent } from "../../shared/components/input/input";
 import { ButtonComponent } from "../../shared/components/button/button";
-import { PagesNames } from "../../shared/models/models";
+import { PagesNames, RoutesLinks } from "../../shared/models/models";
 import {
   setValidationProps,
   validatorService,
 } from "../../shared/utils/validator";
+import { Router } from "../../router/router";
 
 const form = {
   login: "",
@@ -76,9 +77,9 @@ const signInButton = new ButtonComponent("div", {
         if (isPassValid) {
           setValidationProps(passwordInput, form.password, isPassValid);
         }
+      } else {
+        Router.getInstance().go(RoutesLinks.chats);
       }
-
-      console.log(form);
     },
   },
 });
@@ -88,6 +89,9 @@ const registrationButton = new ButtonComponent("div", {
   text: "Create account",
   attr: {
     class: "button-wrapper",
+  },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.registration),
   },
 });
 

@@ -1,5 +1,5 @@
 import { Block } from "../shared/components/block";
-import { RouteInterface } from "../shared/models/models";
+import { AppRoot, RouteInterface } from "../shared/models/models";
 import { Route } from "./route";
 
 export class Router {
@@ -8,7 +8,7 @@ export class Router {
   history = window.history;
   private _currentRoute: RouteInterface | null = null;
   private _rootQuery: string = "";
-  constructor(rootQuery: string) {
+  constructor(rootQuery: string = AppRoot) {
     if (Router.__instance) {
       return Router.__instance;
     }
@@ -65,9 +65,17 @@ export class Router {
   getRoute(pathname: string) {
     const route = this.routes.find((route) => route.match(pathname));
     if (!route) {
+      console.log();
       return this.routes.find((route) => route.match("*"));
     }
 
     return route;
+  }
+
+  static getInstance() {
+    if (!Router.__instance) {
+      Router.__instance = new Router();
+    }
+    return Router.__instance;
   }
 }

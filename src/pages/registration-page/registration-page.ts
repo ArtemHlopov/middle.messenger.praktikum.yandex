@@ -7,6 +7,8 @@ import {
   setValidationProps,
   validatorService,
 } from "../../shared/utils/validator";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const form = {
   email: "",
@@ -228,9 +230,9 @@ const createButton = new ButtonComponent("div", {
             isPasVeryValid
           );
         }
+      } else {
+        Router.getInstance().go(RoutesLinks.chats);
       }
-
-      console.log(form);
     },
   },
 });
@@ -240,7 +242,9 @@ const signInButton = new ButtonComponent("div", {
   attr: {
     class: "button-wrapper",
   },
-  events: {},
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.login),
+  },
 });
 
 const inputs = [
