@@ -4,6 +4,8 @@ import { Block } from "../../shared/components/block";
 import { InputComponent } from "../../shared/components/input/input";
 import { ButtonComponent } from "../../shared/components/button/button";
 import { AvatarComponent } from "../../shared/components/avatar/avatar";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const email = new InputComponent("div", {
   type: "text",
@@ -79,19 +81,30 @@ const changeProfileButton = new ButtonComponent("div", {
   attr: {
     class: "button-wrapper",
   },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.changeProfile),
+  },
 });
+
 const changePasswordButton = new ButtonComponent("div", {
   link: "changePassword",
   text: "Change password",
   attr: {
     class: "button-wrapper",
   },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.changePassword),
+  },
 });
+
 const gotToChartsButton = new ButtonComponent("div", {
   link: "chats",
   text: "Close",
   attr: {
     class: "button-wrapper",
+  },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.chats),
   },
 });
 

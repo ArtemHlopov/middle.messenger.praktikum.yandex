@@ -9,6 +9,8 @@ import {
   setValidationProps,
   validatorService,
 } from "../../shared/utils/validator";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const form = {
   email: "example@example.com",
@@ -102,6 +104,7 @@ const secondName = new InputComponent("div", {
       ),
   },
 });
+
 const nickName = new InputComponent("div", {
   type: "text",
   labelText: "Nickname",
@@ -123,6 +126,7 @@ const nickName = new InputComponent("div", {
       ),
   },
 });
+
 const phone = new InputComponent("div", {
   type: "text",
   labelText: "Phone",
@@ -192,9 +196,9 @@ const button = new ButtonComponent("div", {
         if (isNickValid) {
           setValidationProps(nickName, form.nickName, isNickValid);
         }
+      } else {
+        Router.getInstance().go(RoutesLinks.chats);
       }
-
-      console.log(form);
     },
   },
 });

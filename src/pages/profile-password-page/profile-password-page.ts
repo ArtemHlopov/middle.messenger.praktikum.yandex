@@ -9,6 +9,8 @@ import {
   setValidationProps,
   validatorService,
 } from "../../shared/utils/validator";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const form = {
   oldPas: "example",
@@ -121,9 +123,9 @@ const button = new ButtonComponent("div", {
         if (isPasVeryValid) {
           setValidationProps(passwordVerify, form.verifyPas, isPasVeryValid);
         }
+      } else {
+        Router.getInstance().go(RoutesLinks.chats);
       }
-
-      console.log(form);
     },
   },
 });

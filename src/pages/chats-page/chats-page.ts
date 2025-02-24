@@ -6,6 +6,8 @@ import { AvatarComponent } from "../../shared/components/avatar/avatar";
 import { InputComponent } from "../../shared/components/input/input";
 import { ButtonComponent } from "../../shared/components/button/button";
 import { ChatListItemComponent } from "../../shared/components/chat-list-item/chat-list-item";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const searchInput = new InputComponent("div", {
   type: "text",
@@ -36,19 +38,30 @@ const goToClientErrorPageButton = new ButtonComponent("div", {
   attr: {
     class: "button-wrapper",
   },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.clientError),
+  },
 });
+
 const goToServerErrorPageButton = new ButtonComponent("div", {
   link: "serverError",
   text: "505",
   attr: {
     class: "button-wrapper",
   },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.serverError),
+  },
 });
+
 const goToProfilePageButton = new ButtonComponent("div", {
   link: "profile",
   text: "Profile",
   attr: {
     class: "button-wrapper",
+  },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.profile),
   },
 });
 
