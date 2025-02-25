@@ -4,12 +4,6 @@ import { pagesList } from "./pages";
 import { render } from "./shared/utils/render";
 import { Router } from "./router/router";
 
-declare global {
-  interface Window {
-    router: Router;
-  }
-}
-
 const router = new Router();
 router
   .use(RoutesLinks.login, pagesList.login)

@@ -5,7 +5,7 @@ const enum RequestsMethods {
   DELETE = "DELETE",
 }
 
-type RequestBody = Record<string, unknown>;
+export type RequestBody = Record<string, unknown>;
 
 type Options = {
   headers?: Record<string, string>;
@@ -58,6 +58,8 @@ export class HTTPTransport {
 
       xhr.open(method, isGet && data ? `${url}${queryStringify(data)}` : url);
 
+      xhr.withCredentials = true;
+      console.log(headers);
       Object.keys(headers).forEach((key) => {
         xhr.setRequestHeader(key, headers[key]);
       });

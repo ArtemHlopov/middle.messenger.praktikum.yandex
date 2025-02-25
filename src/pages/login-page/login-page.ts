@@ -10,6 +10,7 @@ import {
   validatorService,
 } from "../../shared/utils/validator";
 import { Router } from "../../router/router";
+import { AuthService } from "../../shared/services/auth-service";
 
 const form = {
   login: "",
@@ -78,7 +79,9 @@ const signInButton = new ButtonComponent("div", {
           setValidationProps(passwordInput, form.password, isPassValid);
         }
       } else {
-        Router.getInstance().go(RoutesLinks.chats);
+        // Router.getInstance().go(RoutesLinks.chats);
+        console.log(form);
+        AuthService.login(form);
       }
     },
   },

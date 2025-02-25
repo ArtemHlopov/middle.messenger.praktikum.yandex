@@ -76,3 +76,16 @@ export const RoutesLinks: Record<PagesNames, string> = {
   [PagesNames.clientError]: "*",
   [PagesNames.serverError]: "/serverError",
 };
+
+export interface RequestResult {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  data: string;
+  json: <T>() => T | null;
+  headers: string;
+}
+
+export type Indexed<T = unknown> = {
+  [key in string | symbol]: T;
+};

@@ -74,7 +74,7 @@ export class Block {
   }
 
   componentDidUpdate(oldProps: BlockProps, newProps: BlockProps) {
-    console.log(oldProps, newProps);
+    // console.log(oldProps, newProps);
     return true;
   }
 
