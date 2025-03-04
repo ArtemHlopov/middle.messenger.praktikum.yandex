@@ -10,18 +10,18 @@ import {
   validatorService,
 } from "../../shared/utils/validator";
 import { Router } from "../../router/router";
-import { AuthService } from "../../shared/services/auth-service";
+import * as AuthService from "../../shared/services/auth-service";
 
 const form = {
-  login: "",
-  password: "",
+  login: "Ttestt",
+  password: "Ttestt1234",
 };
 
 const emailInput = new InputComponent("div", {
   type: "text",
   name: "login",
   labelText: "Login",
-  placeholder: "example@example.com",
+  placeholder: "example",
   attr: { "custom-id": "user-login", class: "input-wrapper" },
   events: {
     input: (event: Event) =>
@@ -30,7 +30,7 @@ const emailInput = new InputComponent("div", {
       setValidationProps(
         emailInput,
         form.login,
-        validatorService.checkEmail(form.login).errorMsg
+        validatorService.checkLogin(form.login).errorMsg
       ),
   },
 });
@@ -64,7 +64,7 @@ const signInButton = new ButtonComponent("div", {
   },
   events: {
     click: (event: Event) => {
-      const isLoginValid = validatorService.checkEmail(form.login).errorMsg;
+      const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
       const isPassValid = validatorService.checkPassword(
         form.password
       ).errorMsg;

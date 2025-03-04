@@ -8,6 +8,7 @@ import { ButtonComponent } from "../../shared/components/button/button";
 import { ChatListItemComponent } from "../../shared/components/chat-list-item/chat-list-item";
 import { Router } from "../../router/router";
 import { RoutesLinks } from "../../shared/models/models";
+import * as AuthService from "../../shared/services/auth-service";
 
 const searchInput = new InputComponent("div", {
   type: "text",
@@ -62,6 +63,16 @@ const goToProfilePageButton = new ButtonComponent("div", {
   },
   events: {
     click: () => Router.getInstance().go(RoutesLinks.profile),
+  },
+});
+
+const logoutBtn = new ButtonComponent("div", {
+  text: "Logout",
+  attr: {
+    class: "button-wrapper",
+  },
+  events: {
+    click: () => AuthService.logout(),
   },
 });
 
@@ -163,6 +174,7 @@ export class ChatsPageComponent extends Block {
       sendMsgInput,
       buttons,
       chats,
+      logoutBtn,
       attr: {
         class: "chats-page-wrapper",
       },

@@ -12,7 +12,6 @@ export class Router {
     if (Router.__instance) {
       return Router.__instance;
     }
-    // this.routes = [];
     this._currentRoute = null;
     this._rootQuery = rootQuery;
 

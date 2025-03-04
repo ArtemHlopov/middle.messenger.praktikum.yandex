@@ -1,35 +1,31 @@
-import { CallBack } from "../models/models";
+export class EventBus<E extends string> {
+  listeners: { [key in E]?: Function[] } = {};
 
-export class EventBus {
-  listeners: Record<string, CallBack[]>;
-
-  constructor() {
-    this.listeners = {};
-  }
-
-  on(event: string, callback: CallBack): void {
+  on<F extends (...args: Parameters<F>) => void>(event: E, callback: F): void {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
-
-    this.listeners[event].push(callback);
+    this.listeners[event]!.push(callback);
   }
 
-  off(event: string, callback: CallBack): void {
+  off<F extends (...args: any) => void>(event: E, callback: F): void {
     if (!this.listeners[event]) {
-      throw new Error(`No event: ${event}`);
+      throw new Error(`Нет события: ${event}`);
     }
-
-    this.listeners[event] = this.listeners[event].filter(
+    this.listeners[event] = this.listeners[event]!.filter(
       (listener) => listener !== callback
     );
   }
 
-  emit(event: string, ...args: unknown[]): void {
+  emit<F extends (...args: any) => void>(
+    event: E,
+    ...args: Parameters<F>
+  ): void {
     if (!this.listeners[event]) {
-      throw new Error(`No event: ${event}`);
+      return;
     }
-
-    this.listeners[event].forEach((listener) => listener(...args));
+    this.listeners[event]!.forEach(function (listener) {
+      listener(...args);
+    });
   }
 }

@@ -9,12 +9,13 @@ import {
 } from "../../shared/utils/validator";
 import { Router } from "../../router/router";
 import { RoutesLinks } from "../../shared/models/models";
+import * as AuthService from "../../shared/services/auth-service";
 
 const form = {
   email: "",
   login: "",
-  firstName: "",
-  secondName: "",
+  first_name: "",
+  second_name: "",
   phone: "",
   password: "",
   passwordVerify: "",
@@ -71,12 +72,12 @@ const userName = new InputComponent("div", {
   },
   events: {
     input: (event: Event) =>
-      (form.firstName = (event.target as HTMLInputElement).value),
+      (form.first_name = (event.target as HTMLInputElement).value),
     focusout: () =>
       setValidationProps(
         userName,
-        form.firstName,
-        validatorService.checkName(form.firstName).errorMsg
+        form.first_name,
+        validatorService.checkName(form.first_name).errorMsg
       ),
   },
 });
@@ -91,12 +92,12 @@ const userSecondName = new InputComponent("div", {
   },
   events: {
     input: (event: Event) =>
-      (form.secondName = (event.target as HTMLInputElement).value),
+      (form.second_name = (event.target as HTMLInputElement).value),
     focusout: () =>
       setValidationProps(
         userSecondName,
-        form.secondName,
-        validatorService.checkName(form.secondName).errorMsg
+        form.second_name,
+        validatorService.checkName(form.second_name).errorMsg
       ),
   },
 });
@@ -177,9 +178,9 @@ const createButton = new ButtonComponent("div", {
     click: (event: Event) => {
       const isEmailValid = validatorService.checkEmail(form.email).errorMsg;
       const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
-      const isNameValid = validatorService.checkName(form.firstName).errorMsg;
+      const isNameValid = validatorService.checkName(form.first_name).errorMsg;
       const isSecondNameValid = validatorService.checkName(
-        form.secondName
+        form.second_name
       ).errorMsg;
       const isPhoneValid = validatorService.checkPhone(form.phone).errorMsg;
       const isPassValid = validatorService.checkPassword(
@@ -208,12 +209,12 @@ const createButton = new ButtonComponent("div", {
           setValidationProps(loginInput, form.login, isLoginValid);
         }
         if (isNameValid) {
-          setValidationProps(userName, form.firstName, isNameValid);
+          setValidationProps(userName, form.first_name, isNameValid);
         }
         if (isSecondNameValid) {
           setValidationProps(
             userSecondName,
-            form.secondName,
+            form.second_name,
             isSecondNameValid
           );
         }
@@ -231,7 +232,8 @@ const createButton = new ButtonComponent("div", {
           );
         }
       } else {
-        Router.getInstance().go(RoutesLinks.chats);
+        const { passwordVerify, ...formWithoutPasswordVerify } = form;
+        AuthService.register(formWithoutPasswordVerify);
       }
     },
   },

@@ -1,51 +1,66 @@
 import AuthAPI from "../../api/api-auth";
+import { Route } from "../../router/route";
 import { Router } from "../../router/router";
-import { UserInfo, UserLogin } from "../models/auth.models";
+import { UserInfo, UserLogin, UserRegistration } from "../models/auth.models";
 import { Indexed, RoutesLinks } from "../models/models";
 
 const authApi = new AuthAPI();
 
-export const AuthService = {
-  login: async (loginForm: UserLogin): Promise<void> => {
-    console.log(loginForm);
-    try {
-      const xhr = await authApi.login(loginForm);
-      console.log(xhr);
-      if (xhr.ok) {
+export const login = async (loginForm: UserLogin): Promise<void> => {
+  await authApi
+    .login(loginForm)
+    .then(async (data) => {
+      console.log(data);
+      if (
+        data === "OK" ||
+        (data.reason && data.reason === "User already in system")
+      ) {
         await userInfo();
         Router.getInstance().go(RoutesLinks.chats);
-      } else if (xhr.status === 400 && xhr.data) {
-        const errData = JSON.parse(xhr.data);
+      }
 
-        if (errData?.reason === "User already in system") {
-          await userInfo();
-          Router.getInstance().go(RoutesLinks.chats);
-        }
-      } else if (xhr.status >= 500) {
-        Router.getInstance().go(RoutesLinks.serverError);
-      }
-    } catch (responsError: unknown) {
-      if ((responsError as Indexed)?.reason === "User already in system") {
-        Router.getInstance().go(RoutesLinks.chats);
-      }
-      console.error(responsError);
-    } finally {
-      Router.getInstance().go(RoutesLinks.chats);
-    }
-  },
-  userInfo: async (): Promise<UserInfo | null> => {
+      // if (data)
+      //   try {
+      //     const user = await userInfo();
+      //     console.log("TYT", user);
+      //     if (user) {
+      //       console.log("TUT2", user);
+      //       Router.getInstance().go(RoutesLinks.chats);
+      //     }
+      //   } catch (error) {}
+    })
+    .catch(console.log);
+};
+
+export const register = async (
+  registerForm: UserRegistration
+): Promise<void> => {
+  console.log(registerForm);
+  await authApi.registration(registerForm).then(async (data) => {
     try {
-      const xhr = await authApi.userInfo();
-      if (xhr.ok) {
-        const data = xhr.json<UserInfo>();
+      const user = await userInfo();
+      console.log("TYT", user);
+      Router.getInstance().go(RoutesLinks.chats);
+    } catch (error) {}
+  });
+};
 
-        return data;
+export const userInfo = async () => {
+  await authApi
+    .userInfo()
+    .then(async (user) => {
+      if (typeof user === "object" && user !== null) {
+        console.log("SETAEM", user);
+        window.store.set({ user });
+        console.log(window.store.getState());
       }
-      return null;
-    } catch (responsError: unknown) {
-      console.error(responsError);
-      return null;
-    } finally {
-    }
-  },
+    })
+    .catch(console.error);
+};
+
+export const logout = async () => {
+  await authApi.logout().then((data) => {
+    console.log(data);
+    Router.getInstance().go(RoutesLinks.login);
+  });
 };

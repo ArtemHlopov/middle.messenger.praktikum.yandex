@@ -41,7 +41,7 @@ export class HTTPTransport {
     options: {
       headers?: Record<string, string>;
       method?: RequestsMethods;
-      data?: RequestBody;
+      data?: RequestBody | FormData;
       timeout?: number;
     }
   ): Promise<T> {
@@ -56,14 +56,21 @@ export class HTTPTransport {
       const xhr = new XMLHttpRequest();
       const isGet = method === RequestsMethods.GET;
 
-      xhr.open(method, isGet && data ? `${url}${queryStringify(data)}` : url);
+      xhr.open(
+        method,
+        isGet && data && !(data instanceof FormData)
+          ? `${url}${queryStringify(data)}`
+          : url
+      );
 
       xhr.withCredentials = true;
-      console.log(headers);
-      Object.keys(headers).forEach((key) => {
-        xhr.setRequestHeader(key, headers[key]);
-      });
 
+      const isFormData = data instanceof FormData;
+      if (!isFormData) {
+        Object.keys(headers).forEach((key) => {
+          xhr.setRequestHeader(key, headers[key]);
+        });
+      }
       xhr.onload = () => {
         try {
           const contentType = xhr.getResponseHeader("Content-Type") || "";
@@ -92,6 +99,8 @@ export class HTTPTransport {
 
       if (isGet || !data) {
         xhr.send();
+      } else if (isFormData) {
+        xhr.send(data as FormData);
       } else {
         xhr.send(JSON.stringify(data));
       }
