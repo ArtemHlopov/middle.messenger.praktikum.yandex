@@ -1,5 +1,6 @@
 import { EventBus } from "../shared/components/event-bus.ts";
 import { UserInfo } from "../shared/models/auth.models.ts";
+import { ChatInfo } from "../shared/models/chat.models.ts";
 
 export enum StoreEvents {
   Updated = "Updated",
@@ -7,6 +8,7 @@ export enum StoreEvents {
 
 interface Indexed {
   user?: UserInfo;
+  chats?: ChatInfo[];
   // pickedChat?: getChatsResponse;
   // messages?: MessageResponse;
 }

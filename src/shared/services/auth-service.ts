@@ -3,6 +3,7 @@ import { Route } from "../../router/route";
 import { Router } from "../../router/router";
 import { UserInfo, UserLogin, UserRegistration } from "../models/auth.models";
 import { Indexed, RoutesLinks } from "../models/models";
+import * as ChatsService from "./chats-service";
 
 const authApi = new AuthAPI();
 
@@ -16,7 +17,6 @@ export const login = async (loginForm: UserLogin): Promise<void> => {
         (data.reason && data.reason === "User already in system")
       ) {
         await userInfo();
-        Router.getInstance().go(RoutesLinks.chats);
       }
 
       // if (data)
@@ -36,13 +36,14 @@ export const register = async (
   registerForm: UserRegistration
 ): Promise<void> => {
   console.log(registerForm);
-  await authApi.registration(registerForm).then(async (data) => {
-    try {
+  await authApi
+    .registration(registerForm)
+    .then(async (data) => {
       const user = await userInfo();
       console.log("TYT", user);
       Router.getInstance().go(RoutesLinks.chats);
-    } catch (error) {}
-  });
+    })
+    .catch(console.log);
 };
 
 export const userInfo = async () => {
@@ -54,6 +55,8 @@ export const userInfo = async () => {
         window.store.set({ user });
         console.log(window.store.getState());
       }
+      await ChatsService.getChatList();
+      Router.getInstance().go(RoutesLinks.chats);
     })
     .catch(console.error);
 };

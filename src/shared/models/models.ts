@@ -89,3 +89,5 @@ export interface RequestResult {
 export type Indexed<T = unknown> = {
   [key in string | symbol]: T;
 };
+
+export type ErrorRequestObj = { reason: string };

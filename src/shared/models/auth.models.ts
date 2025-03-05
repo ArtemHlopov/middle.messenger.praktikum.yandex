@@ -1,5 +1,5 @@
-import { userInfo } from "os";
 import { RequestBody } from "../utils/httpClient";
+import { ErrorRequestObj, Indexed } from "./models";
 
 export interface UserLogin extends RequestBody {
   login: string;
@@ -26,19 +26,17 @@ export interface UserInfo extends RequestBody {
   email: string;
 }
 
-export type UserLoginResponseObj = "OK" | { reason: string };
+export type UserLoginResponseObj = "OK" | ErrorRequestObj;
 
-export type UserRegistrationResponseObj = { id: number } | { reason: string };
+export type UserRegistrationResponseObj = { id: number } | ErrorRequestObj;
 
 export type UserDataForChange = Omit<UserInfo, "id">;
 
-export interface UserChangePasswordObj {
-  [key: string]: unknown;
+export interface UserChangePasswordObj extends Indexed {
   oldPassword: string;
   newPassword: string;
 }
 
-export interface UserSearchObj {
-  [key: string]: unknown;
+export interface UserSearchObj extends Indexed {
   login: string;
 }

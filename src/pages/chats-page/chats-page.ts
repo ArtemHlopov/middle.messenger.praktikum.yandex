@@ -9,6 +9,12 @@ import { ChatListItemComponent } from "../../shared/components/chat-list-item/ch
 import { Router } from "../../router/router";
 import { RoutesLinks } from "../../shared/models/models";
 import * as AuthService from "../../shared/services/auth-service";
+import * as ChatService from "../../shared/services/chats-service";
+
+const form = {
+  search: "",
+  msg: "",
+};
 
 const searchInput = new InputComponent("div", {
   type: "text",
@@ -19,7 +25,12 @@ const searchInput = new InputComponent("div", {
     "custom-id": "search-input",
     class: "profile-form-control",
   },
+  events: {
+    input: (event: Event) =>
+      (form.search = (event.target as HTMLInputElement).value),
+  },
 });
+
 const sendMsgInput = new InputComponent("div", {
   type: "text",
   name: "new-message",
@@ -28,6 +39,10 @@ const sendMsgInput = new InputComponent("div", {
   attr: {
     "custom-id": "new-message",
     class: "profile-form-control",
+  },
+  events: {
+    input: (event: Event) =>
+      (form.msg = (event.target as HTMLInputElement).value),
   },
 });
 
@@ -73,6 +88,16 @@ const logoutBtn = new ButtonComponent("div", {
   },
   events: {
     click: () => AuthService.logout(),
+  },
+});
+
+const createChatBtn = new ButtonComponent("div", {
+  text: "Create chat",
+  attr: {
+    class: "button-wrapper",
+  },
+  events: {
+    click: () => ChatService.createChat({ title: form.search }),
   },
 });
 
@@ -154,7 +179,7 @@ const buttons = [
   goToProfilePageButton,
 ];
 
-const chats = [
+let chats = [
   listItem1,
   listItem2,
   listItem3,
@@ -171,6 +196,7 @@ export class ChatsPageComponent extends Block {
     super("div", {
       avatar,
       searchInput,
+      createChatBtn,
       sendMsgInput,
       buttons,
       chats,
@@ -179,7 +205,37 @@ export class ChatsPageComponent extends Block {
         class: "chats-page-wrapper",
       },
     });
+    window.store.on("Updated", this.updateChats.bind(this));
   }
+
+  updateChats() {
+    console.log("TYT STORE", window.store.getState().chats);
+    let updatedChats: ChatListItemComponent[];
+    if (
+      window.store.getState().chats &&
+      window.store.getState().chats?.length
+    ) {
+      console.log("CHATI", window.store.getState().chats);
+      updatedChats = window.store
+        .getState()
+        .chats?.map(
+          (chat) =>
+            new ChatListItemComponent(
+              chat.id,
+              chat.title,
+              chat.last_message?.content || "",
+              chat.last_message?.time || "",
+              chat.unread_count
+            )
+        ) as ChatListItemComponent[];
+      console.log(updatedChats);
+    } else {
+      updatedChats = [];
+    }
+
+    this.setProps({ ...this._props, chats: updatedChats });
+  }
+
   render(): DocumentFragment {
     return this.compile(ChatsPage);
   }

@@ -10,4 +10,6 @@ export const API = {
   changeUserPasswor: `${BASE_URL + "/user/password"}`,
   searchUserByLogin: `${BASE_URL + "/user/search"}`,
   uploadFileToServer: `${BASE_URL + "/resources"}`,
+  chatList: `${BASE_URL + "/chats"}`,
+  createChat: `${BASE_URL + "/chats"}`,
 };
