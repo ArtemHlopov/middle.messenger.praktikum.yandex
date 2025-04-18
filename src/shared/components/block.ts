@@ -19,7 +19,7 @@ export class Block {
   _id: string | null = null;
   _props: BlockProps;
   _children: Children;
-  _eventBus: () => EventBus;
+  _eventBus: () => EventBus<string>;
   _setUpdate = false;
 
   constructor(tagName = "div", propsAndChilds: BlockProps = {}) {
@@ -38,7 +38,7 @@ export class Block {
     eventBus.emit(Block.EVENTS.INIT);
   }
 
-  _registerEvents(eventBus: EventBus) {
+  _registerEvents(eventBus: EventBus<string>) {
     eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
@@ -73,8 +73,8 @@ export class Block {
     }
   }
 
-  componentDidUpdate(oldProps: BlockProps, newProps: BlockProps) {
-    console.log(oldProps, newProps);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  componentDidUpdate(_oldProps: BlockProps, _newProps: BlockProps) {
     return true;
   }
 
@@ -240,5 +240,17 @@ export class Block {
     });
 
     return fragment.content;
+  }
+
+  setPropsForChildren(children: Block | Block[], newProps: any) {
+    if (Array.isArray(children)) {
+      children.forEach((child) => {
+        if (child instanceof Block) {
+          child.setProps(newProps);
+        }
+      });
+    } else if (children instanceof Block) {
+      children.setProps(newProps);
+    }
   }
 }

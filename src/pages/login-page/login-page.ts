@@ -4,11 +4,13 @@ import { default as LoginPage } from "./login-page.hbs?raw";
 import { Block } from "../../shared/components/block";
 import { InputComponent } from "../../shared/components/input/input";
 import { ButtonComponent } from "../../shared/components/button/button";
-import { PagesNames } from "../../shared/models/models";
+import { PagesNames, RoutesLinks } from "../../shared/models/models";
 import {
   setValidationProps,
   validatorService,
 } from "../../shared/utils/validator";
+import { Router } from "../../router/router";
+import * as AuthService from "../../shared/services/auth-service";
 
 const form = {
   login: "",
@@ -19,7 +21,7 @@ const emailInput = new InputComponent("div", {
   type: "text",
   name: "login",
   labelText: "Login",
-  placeholder: "example@example.com",
+  placeholder: "example",
   attr: { "custom-id": "user-login", class: "input-wrapper" },
   events: {
     input: (event: Event) =>
@@ -28,7 +30,7 @@ const emailInput = new InputComponent("div", {
       setValidationProps(
         emailInput,
         form.login,
-        validatorService.checkEmail(form.login).errorMsg
+        validatorService.checkLogin(form.login).errorMsg
       ),
   },
 });
@@ -61,8 +63,8 @@ const signInButton = new ButtonComponent("div", {
     class: "button-wrapper",
   },
   events: {
-    click: (event: Event) => {
-      const isLoginValid = validatorService.checkEmail(form.login).errorMsg;
+    click: async (event: Event) => {
+      const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
       const isPassValid = validatorService.checkPassword(
         form.password
       ).errorMsg;
@@ -76,9 +78,18 @@ const signInButton = new ButtonComponent("div", {
         if (isPassValid) {
           setValidationProps(passwordInput, form.password, isPassValid);
         }
+      } else {
+        try {
+          await AuthService.login(form);
+          Router.getInstance().go(RoutesLinks.chats);
+        } catch {
+          setValidationProps(
+            passwordInput,
+            form.password,
+            "Login or password isn't correct"
+          );
+        }
       }
-
-      console.log(form);
     },
   },
 });
@@ -88,6 +99,9 @@ const registrationButton = new ButtonComponent("div", {
   text: "Create account",
   attr: {
     class: "button-wrapper",
+  },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.registration),
   },
 });
 
@@ -105,6 +119,7 @@ export class LoginPageComponent extends Block {
       },
     });
   }
+
   render(): DocumentFragment {
     return this.compile(LoginPage);
   }

@@ -28,6 +28,10 @@
 
     .button {
       @include style.text($size: 12px, $line-height: 12px, $color: style.$grey);
+
+      &.new-chat-btn {
+        color: style.$white;
+      }
     }
 
     input {
@@ -135,46 +139,6 @@
 
     .message-time {
       color: style.$blue;
-    }
-  }
-}
-
-.new-message-block {
-  @include style.flex($gap: 10px, $justify: space-between);
-
-  margin: 11px 0;
-
-  .input {
-    @include style.text($size: 12px, $line-height: 12px);
-
-    border-radius: 30px;
-    padding: 10px 20px;
-    text-align: left;
-  }
-
-  .new-msg-button {
-    @include style.flex($justify: center, $align: center);
-
-    display: block;
-    width: 30px;
-    height: 30px;
-    background: none;
-    border: none;
-
-    &.add-file {
-      background-image: url("/add-file.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      cursor: pointer;
-    }
-
-    &.send-message {
-      color: style.$white;
-      font-size: 17px;
-      background-color: style.$blue;
-      border-radius: 50%;
-      cursor: pointer;
     }
   }
 }

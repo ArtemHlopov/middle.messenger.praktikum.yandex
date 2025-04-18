@@ -5,16 +5,17 @@ const enum RequestsMethods {
   DELETE = "DELETE",
 }
 
-type RequestBody = Record<string, unknown>;
+export type RequestBody = Record<string, unknown>;
 
 type Options = {
   headers?: Record<string, string>;
   method?: string;
   data?: RequestBody;
   timeout?: number;
+  credentials?: string;
 };
 
-type HttpRequest = (url: string, options?: Options) => Promise<unknown>;
+type HTTPMethod = <T = unknown>(url: string, options?: Options) => Promise<T>;
 
 const queryStringify = (data: RequestBody): string => {
   const keys = Object.keys(data);
@@ -24,28 +25,28 @@ const queryStringify = (data: RequestBody): string => {
 };
 
 export class HTTPTransport {
-  get: HttpRequest = (url: string, options: Options = {}) =>
+  get: HTTPMethod = (url, options) =>
     this.request(url, { ...options, method: RequestsMethods.GET });
 
-  post = (url: string, options: Options) =>
+  post: HTTPMethod = (url, options) =>
     this.request(url, { ...options, method: RequestsMethods.POST });
 
-  put = (url: string, options: Options) =>
+  put: HTTPMethod = (url, options) =>
     this.request(url, { ...options, method: RequestsMethods.PUT });
 
-  delete = (url: string, options: Options) =>
+  delete: HTTPMethod = (url, options) =>
     this.request(url, { ...options, method: RequestsMethods.DELETE });
 
-  request = (
+  request<T>(
     url: string,
     options: {
       headers?: Record<string, string>;
       method?: RequestsMethods;
-      data?: RequestBody;
+      data?: RequestBody | FormData;
       timeout?: number;
     }
-  ) => {
-    const { headers = {}, method, data, timeout } = options;
+  ): Promise<T> {
+    const { headers = {}, method, data, timeout = 10000 } = options;
 
     return new Promise((resolve, reject) => {
       if (!method) {
@@ -56,27 +57,54 @@ export class HTTPTransport {
       const xhr = new XMLHttpRequest();
       const isGet = method === RequestsMethods.GET;
 
-      xhr.open(method, isGet && data ? `${url}${queryStringify(data)}` : url);
+      xhr.open(
+        method,
+        isGet && data && !(data instanceof FormData)
+          ? `${url}${queryStringify(data)}`
+          : url
+      );
 
-      Object.keys(headers).forEach((key) => {
-        xhr.setRequestHeader(key, headers[key]);
-      });
+      xhr.withCredentials = true;
 
+      const isFormData = data instanceof FormData;
+      if (!isFormData) {
+        Object.keys(headers).forEach((key) => {
+          xhr.setRequestHeader(key, headers[key]);
+        });
+      }
       xhr.onload = () => {
-        resolve(xhr);
+        try {
+          const contentType = xhr.getResponseHeader("Content-Type") || "";
+
+          let response: unknown;
+          if (contentType.includes("application/json")) {
+            response = JSON.parse(xhr.responseText);
+          } else if (contentType.includes("text")) {
+            response = xhr.responseText;
+          } else {
+            response = xhr.response;
+          }
+
+          resolve(response as T);
+        } catch (error) {
+          console.log(error);
+          reject(new Error("Failed to process response"));
+        }
       };
 
       xhr.onabort = reject;
       xhr.onerror = reject;
 
-      xhr.timeout = timeout || 10000;
+      xhr.timeout = timeout;
       xhr.ontimeout = reject;
 
       if (isGet || !data) {
         xhr.send();
+      } else if (isFormData) {
+        xhr.send(data as FormData);
       } else {
         xhr.send(JSON.stringify(data));
       }
     });
-  };
+  }
 }

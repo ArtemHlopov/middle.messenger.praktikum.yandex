@@ -9,10 +9,13 @@ import {
   setValidationProps,
   validatorService,
 } from "../../shared/utils/validator";
+import * as UserService from "../../shared/services/user-service";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const form = {
-  oldPas: "example",
-  newPas: "example",
+  oldPassword: "example",
+  newPassword: "example",
   verifyPas: "example",
 };
 
@@ -20,21 +23,21 @@ const newPassword = new InputComponent("div", {
   type: "password",
   labelText: "New password",
   name: "newPassword",
-  value: form.newPas,
+  value: form.newPassword,
   attr: {
     "custom-id": "newPassword",
     class: "profile-form-control",
   },
   events: {
     input: (event: Event) => {
-      form.newPas = (event.target as HTMLInputElement).value;
+      form.newPassword = (event.target as HTMLInputElement).value;
     },
 
     focusout: () =>
       setValidationProps(
         newPassword,
-        form.newPas,
-        validatorService.checkPassword(form.newPas).errorMsg
+        form.newPassword,
+        validatorService.checkPassword(form.newPassword).errorMsg
       ),
   },
 });
@@ -43,21 +46,21 @@ const oldPassword = new InputComponent("div", {
   type: "password",
   labelText: "Password",
   name: "oldPassword",
-  value: form.oldPas,
+  value: form.oldPassword,
   attr: {
     "custom-id": "oldPassword",
     class: "profile-form-control",
   },
   events: {
     input: (event: Event) => {
-      form.oldPas = (event.target as HTMLInputElement).value;
+      form.oldPassword = (event.target as HTMLInputElement).value;
     },
 
     focusout: () =>
       setValidationProps(
         oldPassword,
-        form.oldPas,
-        validatorService.checkPassword(form.oldPas).errorMsg
+        form.oldPassword,
+        validatorService.checkPassword(form.oldPassword).errorMsg
       ),
   },
 });
@@ -80,7 +83,7 @@ const passwordVerify = new InputComponent("div", {
       setValidationProps(
         passwordVerify,
         form.verifyPas,
-        validatorService.checkPasswordVerify(form.newPas, form.verifyPas)
+        validatorService.checkPasswordVerify(form.newPassword, form.verifyPas)
           .errorMsg
       ),
   },
@@ -98,13 +101,13 @@ const button = new ButtonComponent("div", {
   events: {
     click: (event: Event) => {
       const isOldPassValid = validatorService.checkPassword(
-        form.oldPas
+        form.oldPassword
       ).errorMsg;
       const isNewPassValid = validatorService.checkPassword(
-        form.newPas
+        form.newPassword
       ).errorMsg;
       const isPasVeryValid = validatorService.checkPasswordVerify(
-        form.newPas,
+        form.newPassword,
         form.verifyPas
       ).errorMsg;
 
@@ -113,17 +116,25 @@ const button = new ButtonComponent("div", {
         event.stopPropagation();
 
         if (isOldPassValid) {
-          setValidationProps(oldPassword, form.oldPas, isOldPassValid);
+          setValidationProps(oldPassword, form.oldPassword, isOldPassValid);
         }
         if (isNewPassValid) {
-          setValidationProps(newPassword, form.newPas, isNewPassValid);
+          setValidationProps(newPassword, form.newPassword, isNewPassValid);
         }
         if (isPasVeryValid) {
           setValidationProps(passwordVerify, form.verifyPas, isPasVeryValid);
         }
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { verifyPas, ...passwordData } = form;
+        UserService.changeUserPassword(passwordData).then((response) => {
+          if (response === "OK") {
+            Router.getInstance().go(RoutesLinks.chats);
+          } else {
+            passwordVerify.setProps({ errorText: "Check entered passwords" });
+          }
+        });
       }
-
-      console.log(form);
     },
   },
 });
@@ -141,7 +152,19 @@ export class ProfilePasswordPageComponent extends Block {
         class: "profile-change-page-wrapper",
       },
     });
+    window.store.on("Updated", this.updateProps.bind(this));
+    this.updateProps();
   }
+
+  updateProps(): void {
+    avatar.setProps({
+      avatarLink: window.store.getState().user?.avatar
+        ? "https://ya-praktikum.tech/api/v2/resources/" +
+          window.store.getState().user?.avatar
+        : "/Union.png",
+    });
+  }
+
   render(): DocumentFragment {
     return this.compile(ProfilePasswordPage);
   }
