@@ -36,7 +36,7 @@ export class Router {
     const user = window.store.getState().user;
     const isAuthRoute =
       pathname === RoutesLinks.login || pathname === RoutesLinks.registration;
-
+    console.log(pathname, user?.id, isAuthRoute);
     if (!user?.id && !isAuthRoute) {
       this.go(RoutesLinks.login);
     } else {
