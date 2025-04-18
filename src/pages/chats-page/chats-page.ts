@@ -11,11 +11,6 @@ import { RoutesLinks } from "../../shared/models/models";
 import * as ChatService from "../../shared/services/chats-service";
 import { ChatComponent } from "../../shared/components/chat/chat";
 import { debounce, formatDateToMSgType } from "../../shared/utils/helpers";
-import wsChat from "../../store/socket";
-import {
-  ChatMessageExtendedObj,
-  ChatMessageObj,
-} from "../../shared/models/chat.models";
 
 const form = {
   search: "",

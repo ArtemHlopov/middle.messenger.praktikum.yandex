@@ -47,6 +47,8 @@ export class ChatWebSocket extends EventBus<string> {
     const userId = window.store.getState().user?.id;
     const chatId = window.store.getState().pickedChat?.chatId;
 
+    this.closeConnect();
+
     if (token && userId && chatId) {
       if (
         this.token === token &&
@@ -55,7 +57,6 @@ export class ChatWebSocket extends EventBus<string> {
       ) {
         return;
       }
-      this.closeConnect();
 
       this.token = token;
       this.chatId = chatId;
@@ -114,6 +115,11 @@ export class ChatWebSocket extends EventBus<string> {
   messageWebSocket(event: MessageEvent) {
     if (event?.data) {
       const data: ChatMessageObj | ChatMessageObj[] = JSON.parse(event.data);
+      if ((data as ChatMessageObj).type === "pong") return;
+      if (Array.isArray(data) && data.length === 0) {
+        this.messages = data;
+        this.emit(WSEvents.message);
+      }
       if (
         Array.isArray(data) &&
         data.every((item) => item.type === "message")
@@ -122,9 +128,6 @@ export class ChatWebSocket extends EventBus<string> {
         this.emit(WSEvents.message);
       } else if ((data as ChatMessageObj).type === "message") {
         this.messages = [...this.messages, data as ChatMessageObj];
-        this.emit(WSEvents.message);
-      } else if (Array.isArray(data) && data.length === 0) {
-        this.messages = data;
         this.emit(WSEvents.message);
       }
     }
@@ -143,14 +146,16 @@ export class ChatWebSocket extends EventBus<string> {
   }
 
   private setPingInterval() {
+    this.clearPingInterval();
     this.pingInterval = setInterval(() => {
       this.socket?.send(JSON.stringify({ type: "ping", content: "" }));
     }, 3000);
   }
 
   private clearPingInterval() {
-    if (this.pingInterval) {
+    if (this.pingInterval !== null) {
       clearInterval(this.pingInterval as number);
+      this.pingInterval = null;
     }
   }
 }

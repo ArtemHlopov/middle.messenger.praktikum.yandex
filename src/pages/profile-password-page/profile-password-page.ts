@@ -125,6 +125,7 @@ const button = new ButtonComponent("div", {
           setValidationProps(passwordVerify, form.verifyPas, isPasVeryValid);
         }
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { verifyPas, ...passwordData } = form;
         UserService.changeUserPassword(passwordData).then((response) => {
           if (response === "OK") {

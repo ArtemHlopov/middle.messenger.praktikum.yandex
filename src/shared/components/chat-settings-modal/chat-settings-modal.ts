@@ -7,6 +7,7 @@ import * as ChatsService from "../../services/chats-service";
 import { convertToNumber } from "../../utils/helpers";
 import { Router } from "../../../router/router";
 import { RoutesLinks } from "../../models/models";
+import wsChat from "../../../store/socket";
 
 interface ChatSettingsModalProps {
   title: string;
@@ -137,6 +138,7 @@ export class ChatSettingsModalComponent extends Block {
                 this.toggleModal();
                 window.store.set({ pickedChat: null, tokenChat: "" });
                 Router.getInstance().go(RoutesLinks.chats);
+                wsChat.closeConnect();
               } else {
                 inputField.setProps({
                   errorText: "Error during removing chat",

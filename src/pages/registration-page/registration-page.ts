@@ -232,6 +232,7 @@ const createButton = new ButtonComponent("div", {
           );
         }
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { passwordVerify, ...formWithoutPasswordVerify } = form;
         AuthService.register(formWithoutPasswordVerify);
       }

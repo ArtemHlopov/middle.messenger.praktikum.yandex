@@ -73,8 +73,8 @@ export class Block {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   componentDidUpdate(oldProps: BlockProps, newProps: BlockProps) {
-    // console.log(oldProps, newProps);
     return true;
   }
 

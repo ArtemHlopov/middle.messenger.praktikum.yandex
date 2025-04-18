@@ -4,7 +4,7 @@ import { default as ChatTemplate } from "./chat.hbs?raw";
 import { AvatarComponent } from "../avatar/avatar";
 import { ButtonComponent } from "../button/button";
 import { InputComponent } from "../input/input";
-import wsChat from "../../../store/socket";
+import wsChat, { WSEvents } from "../../../store/socket";
 import {
   ChatMessageExtendedObj,
   ChatMessageObj,
@@ -71,14 +71,24 @@ export class ChatComponent extends Block {
       title: window.store?.getState().pickedChat?.chatTitle || "Chat",
       attr: { class: "chat-preview-block" },
     });
-    wsChat.on("message", this.handleMessage.bind(this));
+    wsChat.on(WSEvents.message, this.handleMessage.bind(this));
   }
 
   handleMessage() {
-    console.log(wsChat.messages);
     const wsNewMessages = this.transformMessages(wsChat.messages);
     this.setProps({
-      messages: wsNewMessages,
+      messages:
+        wsNewMessages.length > 0
+          ? wsNewMessages
+          : [
+              {
+                content: "chat is empty",
+                id: 123,
+                time: "",
+                type: "type",
+                user_id: 123,
+              },
+            ],
     });
   }
   transformMessages(data: ChatMessageObj[]): ChatMessageExtendedObj[] {
