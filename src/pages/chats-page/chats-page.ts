@@ -11,6 +11,7 @@ import { RoutesLinks } from "../../shared/models/models";
 import * as ChatService from "../../shared/services/chats-service";
 import { ChatComponent } from "../../shared/components/chat/chat";
 import { debounce, formatDateToMSgType } from "../../shared/utils/helpers";
+import { API } from "../../shared/models/api";
 
 const form = {
   search: "",
@@ -137,7 +138,7 @@ export class ChatsPageComponent extends Block {
                 ? formatDateToMSgType(chat.last_message?.time)
                 : "",
               chat.unread_count,
-              chat.avatar || ""
+              chat.avatar ? API.uploadFileToServer + chat.avatar : ""
             )
         ) as ChatListItemComponent[];
     } else {

@@ -11,16 +11,11 @@ import {
 } from "../../models/chat.models";
 import { formatDateToMSgType } from "../../utils/helpers";
 import { ChatSettingsModalComponent } from "../chat-settings-modal/chat-settings-modal";
+import { API } from "../../models/api";
 
 const form = {
   msg: "",
 };
-
-const avatar = new AvatarComponent("div", {
-  ...(window.store?.getState().pickedChat?.chatAvatar && {
-    avatarLink: window.store.getState().pickedChat?.chatAvatar,
-  }),
-});
 
 const sendMsgInput = new InputComponent("div", {
   type: "text",
@@ -44,6 +39,12 @@ const modal = new ChatSettingsModalComponent({
 
 export class ChatComponent extends Block {
   constructor() {
+    const avatar = new AvatarComponent("div", {
+      ...(window.store?.getState().pickedChat?.chatAvatar && {
+        avatarLink: window.store.getState().pickedChat?.chatAvatar,
+      }),
+    });
+
     const sendMessageBth = new ButtonComponent("div", {
       text: "→",
       attr: {
