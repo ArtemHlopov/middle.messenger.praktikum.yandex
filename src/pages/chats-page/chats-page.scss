@@ -28,6 +28,7 @@
 
     .button {
       @include style.text($size: 12px, $line-height: 12px, $color: style.$grey);
+
       &.new-chat-btn {
         color: style.$white;
       }

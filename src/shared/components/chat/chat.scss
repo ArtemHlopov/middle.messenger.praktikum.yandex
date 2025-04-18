@@ -2,21 +2,10 @@
 
 .msg-block,
 .msg-wrapper {
-  @include style.text();
+  @include style.text;
 
   display: flex;
   gap: 1rem;
-}
-
-.msg-wrapper {
-  width: 100%;
-  margin-bottom: 0.3rem;
-  &.user-msg {
-    justify-content: flex-end;
-    & .msg-block {
-      background-color: style.$msg-blue;
-    }
-  }
 }
 
 .msg-block {
@@ -24,6 +13,19 @@
   padding: 0.5rem;
   border-radius: 10px;
   background-color: style.$msg-grey;
+}
+
+.msg-wrapper {
+  width: 100%;
+  margin-bottom: 0.3rem;
+
+  &.user-msg {
+    justify-content: flex-end;
+
+    & .msg-block {
+      background-color: style.$msg-blue;
+    }
+  }
 }
 
 .current-chat {
@@ -43,8 +45,10 @@
     padding: 10px 20px;
     text-align: left;
   }
+
   .button-wrapper {
     width: auto;
+
     button {
       color: style.$white;
       font-size: 28px;
@@ -59,6 +63,7 @@
       align-items: center;
     }
   }
+
   .new-msg-button {
     @include style.flex($justify: center, $align: center);
 
