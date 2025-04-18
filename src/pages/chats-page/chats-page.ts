@@ -150,7 +150,6 @@ export class ChatsPageComponent extends Block {
     }
     const chatID = window.store.getState().pickedChat?.chatId;
     this.setProps({
-      ...this._props,
       chats: updatedChats,
       chat: chatID ? new ChatComponent() : null,
     });
