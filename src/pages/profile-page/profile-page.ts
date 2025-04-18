@@ -6,6 +6,7 @@ import { ButtonComponent } from "../../shared/components/button/button";
 import { AvatarComponent } from "../../shared/components/avatar/avatar";
 import { Router } from "../../router/router";
 import { RoutesLinks } from "../../shared/models/models";
+import * as AuthService from "../../shared/services/auth-service";
 
 const email = new InputComponent("div", {
   type: "text",
@@ -90,7 +91,7 @@ const changePasswordButton = new ButtonComponent("div", {
   },
 });
 
-const gotToChartsButton = new ButtonComponent("div", {
+const gotToChatsButton = new ButtonComponent("div", {
   link: "chats",
   text: "Close",
   attr: {
@@ -101,13 +102,32 @@ const gotToChartsButton = new ButtonComponent("div", {
   },
 });
 
+const logoutButton = new ButtonComponent("div", {
+  link: "login",
+  text: "Logout",
+  attr: {
+    class: "button-wrapper",
+  },
+  events: {
+    click: () => {
+      AuthService.logout();
+      Router.getInstance().go(RoutesLinks.login);
+    },
+  },
+});
+
 const avatar = new AvatarComponent("div", {
   avatarLink: "/Union.png",
   additionalClass: "avatar-large",
 });
 
 const inputs = [email, login, firstName, secondName, phone];
-const buttons = [changeProfileButton, changePasswordButton, gotToChartsButton];
+const buttons = [
+  changeProfileButton,
+  changePasswordButton,
+  gotToChatsButton,
+  logoutButton,
+];
 
 export class ProfilePageComponent extends Block {
   constructor() {
@@ -120,6 +140,11 @@ export class ProfilePageComponent extends Block {
         class: "profile-page-wrapper",
       },
     });
+    window.store.on("Updated", this.updateProps.bind(this));
+    this.updateProps();
+  }
+
+  updateProps(): void {
     this.setProps({ title: window.store.getState().user?.first_name });
     email.setProps({ value: window.store.getState().user?.email });
     login.setProps({ value: window.store.getState().user?.login });

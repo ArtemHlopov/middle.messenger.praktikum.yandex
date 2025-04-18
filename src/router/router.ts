@@ -1,25 +1,25 @@
 import { Block } from "../shared/components/block";
-import { AppRoot, RouteInterface } from "../shared/models/models";
+import { AppRoot, RouteInterface, RoutesLinks } from "../shared/models/models";
 import { Route } from "./route";
 
 export class Router {
-  private static __instance: Router | null;
+  private static instance: Router | null;
   routes: RouteInterface[] = [];
   history = window.history;
-  private _currentRoute: RouteInterface | null = null;
-  private _rootQuery: string = "";
+  private currentRoute: RouteInterface | null = null;
+  private rootQuery: string = "";
   constructor(rootQuery: string = AppRoot) {
-    if (Router.__instance) {
-      return Router.__instance;
+    if (Router.instance) {
+      return Router.instance;
     }
-    this._currentRoute = null;
-    this._rootQuery = rootQuery;
+    this.currentRoute = null;
+    this.rootQuery = rootQuery;
 
-    Router.__instance = this;
+    Router.instance = this;
   }
 
   use(pathname: string, block: typeof Block) {
-    const route = new Route(pathname, block, { rootQuery: this._rootQuery });
+    const route = new Route(pathname, block, { rootQuery: this.rootQuery });
 
     this.routes.push(route);
 
@@ -28,29 +28,55 @@ export class Router {
 
   start() {
     window.onpopstate = (event: PopStateEvent) => {
-      this._onRoute((event.target as Window).location.pathname);
+      this.onRoute((event.target as Window).location.pathname);
     };
 
-    this._onRoute(window.location.pathname);
+    const pathname = window.location.pathname;
+
+    const user = window.store.getState().user;
+    const isAuthRoute =
+      pathname === RoutesLinks.login || pathname === RoutesLinks.registration;
+
+    if (!user?.id && !isAuthRoute) {
+      this.go(RoutesLinks.login);
+    } else {
+      this.onRoute(pathname);
+    }
   }
 
-  _onRoute(pathname: string) {
+  onRoute(pathname: string) {
+    const store = window.store?.getState();
+
+    if (store && pathname === RoutesLinks.chats) {
+      window.store.set({ pickedChat: null, tokenChat: "" });
+    }
+
     const route = this.getRoute(pathname);
     if (!route) {
       return;
     }
 
-    if (this._currentRoute && this._currentRoute !== route) {
-      this._currentRoute.leave();
+    if (this.currentRoute && this.currentRoute !== route) {
+      this.currentRoute.leave();
     }
 
-    this._currentRoute = route;
+    this.currentRoute = route;
     route.render();
   }
 
   go(pathname: string) {
+    const user = window.store.getState().user;
+    const isAuthRoute =
+      pathname === RoutesLinks.login || pathname === RoutesLinks.registration;
+
+    if (!user?.id && !isAuthRoute) {
+      this.history.pushState({}, "", RoutesLinks.login);
+      this.onRoute(RoutesLinks.login);
+      return;
+    }
+
     this.history.pushState({}, "", pathname);
-    this._onRoute(pathname);
+    this.onRoute(pathname);
   }
 
   back(): void {
@@ -62,19 +88,26 @@ export class Router {
   }
 
   getRoute(pathname: string) {
+    if (pathname === "/") {
+      const user = window.store.getState().user;
+      if (user) {
+        return this.routes.find((route) => route.match(RoutesLinks.login));
+      } else {
+        return this.routes.find((route) => route.match(RoutesLinks.login));
+      }
+    }
     const route = this.routes.find((route) => route.match(pathname));
     if (!route) {
-      console.log();
-      return this.routes.find((route) => route.match("*"));
+      return this.routes.find((route) => route.match(RoutesLinks.clientError));
     }
 
     return route;
   }
 
   static getInstance() {
-    if (!Router.__instance) {
-      Router.__instance = new Router();
+    if (!Router.instance) {
+      Router.instance = new Router();
     }
-    return Router.__instance;
+    return Router.instance;
   }
 }

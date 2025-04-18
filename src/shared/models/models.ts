@@ -67,9 +67,9 @@ export enum PagesNames {
 }
 
 export const RoutesLinks: Record<PagesNames, string> = {
-  [PagesNames.login]: "/login",
-  [PagesNames.registration]: "/registration",
-  [PagesNames.chats]: "/chats",
+  [PagesNames.login]: "/sign-in",
+  [PagesNames.registration]: "/sign-up",
+  [PagesNames.chats]: "/messenger",
   [PagesNames.profile]: "/profile",
   [PagesNames.changeProfile]: "/changeProfile",
   [PagesNames.changePassword]: "/changePassword",

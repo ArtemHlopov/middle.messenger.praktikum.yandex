@@ -1,11 +1,12 @@
 import { API } from "../shared/models/api";
 import {
+  UserInfo,
   UserLogin,
   UserLoginResponseObj,
   UserRegistration,
   UserRegistrationResponseObj,
 } from "../shared/models/auth.models";
-import { RequestResult } from "../shared/models/models";
+import { ErrorRequestObj } from "../shared/models/models";
 import { HTTPTransport } from "../shared/utils/httpClient";
 
 const authApi = new HTTPTransport();
@@ -27,7 +28,7 @@ export default class AuthAPI {
   ): Promise<UserRegistrationResponseObj> {
     return authApi.post(API.registration, { ...options, data });
   }
-  async userInfo() {
+  async userInfo(): Promise<UserInfo | ErrorRequestObj> {
     return authApi.get(API.userInfo, options);
   }
   async logout() {

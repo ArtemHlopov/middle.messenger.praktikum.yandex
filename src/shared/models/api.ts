@@ -12,4 +12,9 @@ export const API = {
   uploadFileToServer: `${BASE_URL + "/resources"}`,
   chatList: `${BASE_URL + "/chats"}`,
   createChat: `${BASE_URL + "/chats"}`,
+  getChatToken: `${BASE_URL + "/chats/token/"}`,
+  connectToWebSocket: "wss://ya-praktikum.tech/ws/chats/",
+  addUserToChat: `${BASE_URL + "/chats/users"}`,
+  removeUserFromChat: `${BASE_URL + "/chats/users"}`,
+  removeChat: `${BASE_URL + "/chats"}`,
 };

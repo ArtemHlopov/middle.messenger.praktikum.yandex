@@ -1,6 +1,5 @@
 import { Block } from "../../shared/components/block";
 import "./profile-change-page.scss";
-
 import { default as ProfileChangePage } from "./profile-change-page.hbs?raw";
 import { AvatarComponent } from "../../shared/components/avatar/avatar";
 import { ButtonComponent } from "../../shared/components/button/button";
@@ -13,13 +12,13 @@ import * as UserService from "../../shared/services/user-service";
 import { UserInfo } from "../../shared/models/auth.models";
 
 const form: Omit<UserInfo, "id"> = {
-  email: "example@example.com",
-  login: "ivanivanov",
-  first_name: "Ivan",
-  second_name: "Ivanov",
-  display_name: "Ivan",
-  phone: "+7(909)9673030",
-  avatar: null,
+  email: window.store?.getState().user?.email || "",
+  login: window.store?.getState().user?.login || "",
+  first_name: window.store?.getState().user?.first_name || "",
+  second_name: window.store?.getState().user?.second_name || "",
+  display_name: window.store?.getState().user?.display_name || "",
+  phone: window.store?.getState().user?.phone || "",
+  avatar: window.store?.getState().user?.avatar || null,
 };
 
 const email = new InputComponent("div", {
@@ -222,21 +221,6 @@ const button = new ButtonComponent("div", {
   },
 });
 
-const changeAvatar = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  console.log(event);
-  if (target.files && target.files[0]) {
-    const avatarFile = target.files[0];
-    form.avatar = avatarFile; // Обновляем аватар в form
-    console.log("Avatar file selected:", avatarFile);
-
-    // Если нужно, обновить компонент с новым аватаром
-    // avatar.setProps({
-    //   avatarLink: URL.createObjectURL(avatarFile),
-    // });
-  }
-};
-
 const avatar = new AvatarComponent("div", {
   avatarLink: form.avatar || "/Union.png",
   additionalClass: "avatar-large",
@@ -254,12 +238,20 @@ export class ProfileChangePageComponent extends Block {
       },
       events: {
         change: (event) => {
-          if (event.target && event.target.files[0]) {
+          if (event.target && event.target.files?.[0]) {
             UserService.changeUserAvatar(event.target.files[0]);
           }
         },
       },
     });
+    window.store.on("Updated", this.updateProps.bind(this));
+    this.updateProps();
+  }
+
+  updateProps(): void {
+    Object.keys(form).forEach(
+      (key) => (form[key] = window.store.getState().user?.[key] || "")
+    );
     this.setProps({ title: window.store.getState().user?.first_name });
     email.setProps({ value: window.store.getState().user?.email });
     login.setProps({ value: window.store.getState().user?.login });

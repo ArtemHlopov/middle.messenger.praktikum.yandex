@@ -8,11 +8,7 @@ export class Route implements RouteInterface {
   private _block: Block | null;
   private _props: RouteQuery;
 
-  constructor(
-    private pathname: string,
-    private view: typeof Block,
-    private props: RouteQuery
-  ) {
+  constructor(pathname: string, view: typeof Block, props: RouteQuery) {
     this._pathname = pathname;
     this._blockClass = view;
     this._block = null;

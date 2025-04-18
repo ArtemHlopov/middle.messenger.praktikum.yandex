@@ -8,41 +8,37 @@ import { ButtonComponent } from "../../shared/components/button/button";
 import { ChatListItemComponent } from "../../shared/components/chat-list-item/chat-list-item";
 import { Router } from "../../router/router";
 import { RoutesLinks } from "../../shared/models/models";
-import * as AuthService from "../../shared/services/auth-service";
 import * as ChatService from "../../shared/services/chats-service";
+import { ChatComponent } from "../../shared/components/chat/chat";
+import { debounce, formatDateToMSgType } from "../../shared/utils/helpers";
+import wsChat from "../../store/socket";
+import {
+  ChatMessageExtendedObj,
+  ChatMessageObj,
+} from "../../shared/models/chat.models";
 
 const form = {
   search: "",
-  msg: "",
 };
+
+const debouncedSearch = debounce(() => {
+  ChatService.getChatList(form.search);
+}, 1000);
 
 const searchInput = new InputComponent("div", {
   type: "text",
   name: "search-input",
-  additionalClass: "input-filled",
-  placeholder: "Search",
+  additionalClass: "input-filled search-input",
+  placeholder: "Enter chat name for add/search",
   attr: {
     "custom-id": "search-input",
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.search = (event.target as HTMLInputElement).value),
-  },
-});
-
-const sendMsgInput = new InputComponent("div", {
-  type: "text",
-  name: "new-message",
-  placeholder: "Message",
-  additionalClass: "input-filled",
-  attr: {
-    "custom-id": "new-message",
-    class: "profile-form-control",
-  },
-  events: {
-    input: (event: Event) =>
-      (form.msg = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      form.search = (event.target as HTMLInputElement).value;
+      debouncedSearch();
+    },
   },
 });
 
@@ -81,97 +77,16 @@ const goToProfilePageButton = new ButtonComponent("div", {
   },
 });
 
-const logoutBtn = new ButtonComponent("div", {
-  text: "Logout",
-  attr: {
-    class: "button-wrapper",
-  },
-  events: {
-    click: () => AuthService.logout(),
-  },
-});
-
 const createChatBtn = new ButtonComponent("div", {
   text: "Create chat",
   attr: {
     class: "button-wrapper",
   },
+  additionalClass: "button-filled new-chat-btn",
   events: {
     click: () => ChatService.createChat({ title: form.search }),
   },
 });
-
-const listItem1 = new ChatListItemComponent(
-  1,
-  "Andrew",
-  "qwerty-test1",
-  "17:50",
-  4
-);
-const listItem2 = new ChatListItemComponent(
-  2,
-  "Cinema-club",
-  "qwerty-test2",
-  "Fr",
-  null
-);
-const listItem3 = new ChatListItemComponent(
-  3,
-  "Ilya",
-  "qwerty-test3",
-  ">Month",
-  null
-);
-const listItem4 = new ChatListItemComponent(
-  4,
-  "Vadim",
-  "qwerty-test4",
-  ">Year",
-  null,
-  "active"
-);
-const listItem5 = new ChatListItemComponent(
-  5,
-  "Dialogs",
-  "qwerty-test5",
-  "Yesterday",
-  4
-);
-const listItem6 = new ChatListItemComponent(
-  6,
-  "1, 2, 3",
-  "qwerty-test6",
-  "03:50",
-  null
-);
-const listItem7 = new ChatListItemComponent(
-  7,
-  "Design destroyer",
-  "qwerty-test7",
-  "Mn",
-  null
-);
-const listItem8 = new ChatListItemComponent(
-  8,
-  "Day",
-  "qwerty-test8",
-  "<Week",
-  null
-);
-const listItem9 = new ChatListItemComponent(
-  9,
-  "Stas",
-  "qwerty-test9",
-  ">Week",
-  null
-);
-const listItem10 = new ChatListItemComponent(
-  10,
-  "qwerty10",
-  "qwerty-test10",
-  "Yesterday",
-  null
-);
 
 const buttons = [
   goToClientErrorPageButton,
@@ -179,43 +94,42 @@ const buttons = [
   goToProfilePageButton,
 ];
 
-let chats = [
-  listItem1,
-  listItem2,
-  listItem3,
-  listItem4,
-  listItem5,
-  listItem6,
-  listItem7,
-  listItem8,
-  listItem9,
-  listItem10,
-];
 export class ChatsPageComponent extends Block {
+  private isChatsLoaded = false;
+
   constructor() {
     super("div", {
       avatar,
       searchInput,
       createChatBtn,
-      sendMsgInput,
       buttons,
-      chats,
-      logoutBtn,
       attr: {
         class: "chats-page-wrapper",
       },
     });
     window.store.on("Updated", this.updateChats.bind(this));
+    this.loadChatList();
+    this.updateChats();
   }
 
-  updateChats() {
-    console.log("TYT STORE", window.store.getState().chats);
+  async loadChatList(): Promise<void> {
+    const input = document.querySelector(".search-input");
+    if (input) {
+      (input as HTMLInputElement).value = "";
+      form.search = "";
+    }
+    if (!this.isChatsLoaded) {
+      this.isChatsLoaded = true;
+      await ChatService.getChatList();
+    }
+  }
+
+  updateChats(): void {
     let updatedChats: ChatListItemComponent[];
     if (
       window.store.getState().chats &&
       window.store.getState().chats?.length
     ) {
-      console.log("CHATI", window.store.getState().chats);
       updatedChats = window.store
         .getState()
         .chats?.map(
@@ -224,16 +138,22 @@ export class ChatsPageComponent extends Block {
               chat.id,
               chat.title,
               chat.last_message?.content || "",
-              chat.last_message?.time || "",
-              chat.unread_count
+              chat.last_message?.time
+                ? formatDateToMSgType(chat.last_message?.time)
+                : "",
+              chat.unread_count,
+              chat.avatar || ""
             )
         ) as ChatListItemComponent[];
-      console.log(updatedChats);
     } else {
       updatedChats = [];
     }
-
-    this.setProps({ ...this._props, chats: updatedChats });
+    const chatID = window.store.getState().pickedChat?.chatId;
+    this.setProps({
+      ...this._props,
+      chats: updatedChats,
+      chat: chatID ? new ChatComponent() : null,
+    });
   }
 
   render(): DocumentFragment {

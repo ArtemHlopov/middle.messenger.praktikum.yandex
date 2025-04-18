@@ -13,8 +13,8 @@ import { Router } from "../../router/router";
 import * as AuthService from "../../shared/services/auth-service";
 
 const form = {
-  login: "Ttestt",
-  password: "Ttestt1234",
+  login: "",
+  password: "",
 };
 
 const emailInput = new InputComponent("div", {
@@ -63,7 +63,7 @@ const signInButton = new ButtonComponent("div", {
     class: "button-wrapper",
   },
   events: {
-    click: (event: Event) => {
+    click: async (event: Event) => {
       const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
       const isPassValid = validatorService.checkPassword(
         form.password
@@ -79,9 +79,16 @@ const signInButton = new ButtonComponent("div", {
           setValidationProps(passwordInput, form.password, isPassValid);
         }
       } else {
-        // Router.getInstance().go(RoutesLinks.chats);
-        console.log(form);
-        AuthService.login(form);
+        try {
+          await AuthService.login(form);
+          Router.getInstance().go(RoutesLinks.chats);
+        } catch {
+          setValidationProps(
+            passwordInput,
+            form.password,
+            "Login or password isn't correct"
+          );
+        }
       }
     },
   },
@@ -112,6 +119,7 @@ export class LoginPageComponent extends Block {
       },
     });
   }
+
   render(): DocumentFragment {
     return this.compile(LoginPage);
   }

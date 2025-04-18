@@ -12,6 +12,7 @@ type Options = {
   method?: string;
   data?: RequestBody;
   timeout?: number;
+  credentials?: string;
 };
 
 type HTTPMethod = <T = unknown>(url: string, options?: Options) => Promise<T>;

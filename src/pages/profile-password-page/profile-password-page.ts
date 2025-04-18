@@ -10,6 +10,8 @@ import {
   validatorService,
 } from "../../shared/utils/validator";
 import * as UserService from "../../shared/services/user-service";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const form = {
   oldPassword: "example",
@@ -124,7 +126,13 @@ const button = new ButtonComponent("div", {
         }
       } else {
         const { verifyPas, ...passwordData } = form;
-        UserService.changeUserPassword(passwordData);
+        UserService.changeUserPassword(passwordData).then((response) => {
+          if (response === "OK") {
+            Router.getInstance().go(RoutesLinks.chats);
+          } else {
+            passwordVerify.setProps({ errorText: "Check entered passwords" });
+          }
+        });
       }
     },
   },
@@ -143,6 +151,11 @@ export class ProfilePasswordPageComponent extends Block {
         class: "profile-change-page-wrapper",
       },
     });
+    window.store.on("Updated", this.updateProps.bind(this));
+    this.updateProps();
+  }
+
+  updateProps(): void {
     avatar.setProps({
       avatarLink: window.store.getState().user?.avatar
         ? "https://ya-praktikum.tech/api/v2/resources/" +
@@ -150,6 +163,7 @@ export class ProfilePasswordPageComponent extends Block {
         : "/Union.png",
     });
   }
+
   render(): DocumentFragment {
     return this.compile(ProfilePasswordPage);
   }

@@ -1,4 +1,3 @@
-import { title } from "process";
 import { Indexed } from "./models";
 
 export interface ChatInfo {
@@ -27,4 +26,35 @@ export interface ChatCreate extends Indexed {
 
 export interface ChateCreateResponseObj {
   id: number;
+}
+
+export interface ChatTokenRequest {
+  token: string;
+}
+
+export interface ChatMessageObj {
+  content: string;
+  id: number;
+  time: string;
+  type: string;
+  user_id: number;
+}
+
+export interface ChatMessageExtendedObj extends ChatMessageObj {
+  isMine: boolean;
+}
+
+export interface ChatUsersAddRemoveObj extends Indexed {
+  users: number[];
+  chatId: number;
+}
+
+export interface ChatRemoveResponseObj extends Indexed {
+  result: {
+    id: number;
+    title: string;
+    avatar: string | null;
+    created_by: number;
+  };
+  userId: number;
 }

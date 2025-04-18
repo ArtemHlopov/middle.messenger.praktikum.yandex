@@ -1,23 +1,29 @@
 import { EventBus } from "../shared/components/event-bus.ts";
 import { UserInfo } from "../shared/models/auth.models.ts";
 import { ChatInfo } from "../shared/models/chat.models.ts";
+import { Indexed } from "../shared/models/models.ts";
 
 export enum StoreEvents {
   Updated = "Updated",
 }
 
-interface Indexed {
-  user?: UserInfo;
+interface StoreObj extends Indexed {
+  user?: UserInfo | null;
   chats?: ChatInfo[];
-  // pickedChat?: getChatsResponse;
-  // messages?: MessageResponse;
+  isLoading?: false;
+  pickedChat?: {
+    chatId: string | number | null;
+    chatTitle: string | null;
+    chatAvatar: string | null;
+  } | null;
+  tokenChat?: string;
 }
 
 export class Store extends EventBus<string> {
-  private _state: Indexed = {};
+  private _state: StoreObj = {};
   private static _instance: Store;
 
-  constructor(defaultState: {}) {
+  constructor(defaultState: StoreObj) {
     if (Store._instance) {
       return Store._instance;
     }
@@ -33,7 +39,7 @@ export class Store extends EventBus<string> {
     return this._state;
   }
 
-  public set(nextState: {}) {
+  public set(nextState: StoreObj) {
     const prevState = { ...this._state };
 
     this._state = { ...this._state, ...nextState };

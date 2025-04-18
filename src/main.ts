@@ -1,15 +1,24 @@
 import "./style.scss";
-import { AppRoot, PagesNames, RoutesLinks } from "./shared/models/models";
+import { RoutesLinks } from "./shared/models/models";
 import { pagesList } from "./pages";
-import { render } from "./shared/utils/render";
 import { Router } from "./router/router";
 import { Store } from "./store/store";
+import { ChatWebSocket } from "./store/socket";
+import * as AuthService from "./shared/services/auth-service";
 
 declare global {
   interface Window {
     store: Store;
+    socket: ChatWebSocket;
   }
 }
+
+window.store = new Store({
+  user: null,
+  chats: [],
+  pickedChat: null,
+  tokenChat: "",
+});
 
 const router = new Router();
 router
@@ -23,15 +32,6 @@ router
   .use(RoutesLinks.clientError, pagesList.clientError)
   .start();
 
-router.go(RoutesLinks.login);
-
-window.store = new Store({
-  isLoading: false,
-  signInError: "",
-  signUpError: "",
-  changeProfileError: "",
-  user: {},
-  searchUsers: [],
-  pickedChat: {},
-  tokenChat: "",
+document.addEventListener("DOMContentLoaded", async () => {
+  await AuthService.userInfo();
 });

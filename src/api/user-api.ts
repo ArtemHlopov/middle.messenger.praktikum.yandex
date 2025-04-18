@@ -25,10 +25,9 @@ export default class UserAPI {
     return userApi.put(API.changeUserData, { ...options, data });
   }
 
-  async changeUserAvatar(data: File) {
+  async changeUserAvatar(data: File): Promise<UserInfo> {
     const formData = new FormData();
     formData.append("avatar", data);
-    console.log(data, formData);
 
     return userApi.put(API.changeUserAvatar, {
       data: formData as unknown as RequestBody,
