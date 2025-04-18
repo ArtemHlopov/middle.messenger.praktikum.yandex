@@ -11,7 +11,6 @@ import {
 } from "../../models/chat.models";
 import { formatDateToMSgType } from "../../utils/helpers";
 import { ChatSettingsModalComponent } from "../chat-settings-modal/chat-settings-modal";
-import { API } from "../../models/api";
 
 const form = {
   msg: "",
