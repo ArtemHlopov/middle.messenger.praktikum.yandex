@@ -6,23 +6,20 @@ import {
   UserLoginResponseObj,
 } from "../models/auth.models";
 
-const userApi = new UserAPI();
-
 export const changeUserData = async (
   userInfo: UserDataForChange
 ): Promise<UserInfo | { reason: string }> => {
-  return await userApi.changeUserData(userInfo);
+  return await UserAPI.changeUserData(userInfo);
 };
 
 export const changeUserPassword = async (
   data: UserChangePasswordObj
 ): Promise<UserLoginResponseObj> => {
-  return await userApi.changeUserPassword(data);
+  return await UserAPI.changeUserPassword(data);
 };
 
 export const changeUserAvatar = async (data: File): Promise<void> => {
-  await userApi
-    .changeUserAvatar(data)
+  await UserAPI.changeUserAvatar(data)
     .then((user) => {
       window.store.set({ user });
     })

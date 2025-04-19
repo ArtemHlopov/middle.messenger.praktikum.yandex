@@ -108,3 +108,5 @@ export class HTTPTransport {
     });
   }
 }
+
+export default new HTTPTransport();
