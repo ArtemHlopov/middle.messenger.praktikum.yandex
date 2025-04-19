@@ -12,7 +12,9 @@ export const getChatList = async (filter?: string): Promise<void> => {
       window.store.set({ chats: data });
       return data;
     })
-    .catch(console.log);
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const createChat = async (data: ChatCreate): Promise<void> => {
@@ -20,7 +22,9 @@ export const createChat = async (data: ChatCreate): Promise<void> => {
     .then(async () => {
       await getChatList();
     })
-    .catch(console.log);
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const getChatToken = async (id: string | number): Promise<void> => {
@@ -29,7 +33,9 @@ export const getChatToken = async (id: string | number): Promise<void> => {
       window.store.set({ tokenChat: data.token });
       wsChat.createWebSocket();
     })
-    .catch(console.log);
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const addUserToChat = async (

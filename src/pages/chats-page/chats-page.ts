@@ -18,7 +18,7 @@ const form = {
 };
 
 const debouncedSearch = debounce(() => {
-  ChatService.getChatList(form.search);
+  ChatService.getChatList(form.search).catch(console.log);
 }, 1000);
 
 const searchInput = new InputComponent("div", {
@@ -104,9 +104,11 @@ export class ChatsPageComponent extends Block {
         class: "chats-page-wrapper",
       },
       events: {
-        submit: (event: Event) => {
+        submit: async (event: Event) => {
           event.preventDefault();
-          ChatService.createChat({ title: form.search });
+          await ChatService.createChat({ title: form.search }).catch(
+            console.log
+          );
         },
       },
     });
@@ -123,7 +125,7 @@ export class ChatsPageComponent extends Block {
     }
     if (!this.isChatsLoaded) {
       this.isChatsLoaded = true;
-      await ChatService.getChatList();
+      await ChatService.getChatList().catch(console.log);
     }
   }
 

@@ -230,9 +230,11 @@ export class ProfileChangePageComponent extends Block {
         class: "profile-change-page-wrapper",
       },
       events: {
-        change: (event) => {
+        change: async (event) => {
           if (event.target && event.target.files?.[0]) {
-            UserService.changeUserAvatar(event.target.files[0]);
+            UserService.changeUserAvatar(event.target.files[0]).catch(
+              console.log
+            );
           }
         },
         submit: (event: Event) => {

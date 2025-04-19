@@ -24,7 +24,9 @@ export const register = async (
       await userInfo();
       Router.getInstance().go(RoutesLinks.chats);
     })
-    .catch(console.log);
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const userInfo = async () => {
@@ -38,7 +40,9 @@ export const userInfo = async () => {
         }
       }
     })
-    .catch(console.error);
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const logout = async () => {

@@ -23,5 +23,7 @@ export const changeUserAvatar = async (data: File): Promise<void> => {
     .then((user) => {
       window.store.set({ user });
     })
-    .catch(console.log);
+    .catch((error) => {
+      throw error;
+    });
 };

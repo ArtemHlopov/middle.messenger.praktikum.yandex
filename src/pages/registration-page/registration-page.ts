@@ -240,7 +240,7 @@ export class RegistrationPageComponent extends Block {
         style: "width:580px",
       },
       events: {
-        submit: (event: Event) => {
+        submit: async (event: Event) => {
           event.preventDefault();
           const isEmailValid = validatorService.checkEmail(form.email).errorMsg;
           const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
@@ -302,7 +302,9 @@ export class RegistrationPageComponent extends Block {
           } else {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { passwordVerify, ...formWithoutPasswordVerify } = form;
-            AuthService.register(formWithoutPasswordVerify);
+            await AuthService.register(formWithoutPasswordVerify).catch(
+              console.log
+            );
           }
         },
       },
