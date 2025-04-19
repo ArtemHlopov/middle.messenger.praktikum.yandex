@@ -161,6 +161,18 @@ const button = new ButtonComponent("div", {
   },
 });
 
+const goToChatsButton = new ButtonComponent("div", {
+  text: "Back to messenger",
+  additionalClass: "button-filled",
+  type: "button",
+  attr: {
+    class: "button-wrapper",
+  },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.chats),
+  },
+});
+
 const avatar = new AvatarComponent("div", {
   avatarLink: form.avatar || "/Union.png",
   additionalClass: "avatar-large",
@@ -172,6 +184,7 @@ export class ProfileChangePageComponent extends Block {
       avatar,
       inputs,
       button,
+      goToChatsButton,
       title: "Ivan",
       attr: {
         class: "profile-change-page-wrapper",

@@ -71,10 +71,10 @@ export const RoutesLinks: Record<PagesNames, string> = {
   [PagesNames.registration]: "/sign-up",
   [PagesNames.chats]: "/messenger",
   [PagesNames.profile]: "/profile",
-  [PagesNames.changeProfile]: "/changeProfile",
-  [PagesNames.changePassword]: "/changePassword",
+  [PagesNames.changeProfile]: "/settings",
+  [PagesNames.changePassword]: "/change-password",
   [PagesNames.clientError]: "*",
-  [PagesNames.serverError]: "/serverError",
+  [PagesNames.serverError]: "/server-error",
 };
 
 export interface RequestResult {
