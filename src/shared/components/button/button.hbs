@@ -1,2 +1,7 @@
-<button page-link={{link}} type="{{#if type}}{{type}}{{else}}button{{/if}}" class="button {{#if additionalClass}}{{additionalClass}}{{/if}}">{{text}}</button>
+<button 
+  {{#if link}}page-link="{{link}}"{{/if}} 
+  type="{{#if type}}{{type}}{{else}}button{{/if}}" 
+  class="button {{#if additionalClass}}{{additionalClass}}{{/if}}">
+  {{text}}
+</button>
 

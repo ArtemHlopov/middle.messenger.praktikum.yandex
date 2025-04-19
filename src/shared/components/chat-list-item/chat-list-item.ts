@@ -31,7 +31,7 @@ export class ChatListItemComponent extends Block {
             pickedChat: { chatId: chatId, chatTitle: name, chatAvatar: avatar },
             tokenChat: "",
           });
-          await ChatService.getChatToken(chatId);
+          await ChatService.getChatToken(chatId).catch(console.log);
         },
       },
     });

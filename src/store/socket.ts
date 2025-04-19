@@ -115,7 +115,7 @@ export class ChatWebSocket extends EventBus<string> {
   messageWebSocket(event: MessageEvent) {
     if (event?.data) {
       const data: ChatMessageObj | ChatMessageObj[] = JSON.parse(event.data);
-      if ((data as ChatMessageObj).type === "pong") return;
+      if (!Array.isArray(data) && data.type === "pong") return;
       if (Array.isArray(data) && data.length === 0) {
         this.messages = data;
         this.emit(WSEvents.message);
@@ -126,8 +126,9 @@ export class ChatWebSocket extends EventBus<string> {
       ) {
         this.messages = [...this.messages, ...data];
         this.emit(WSEvents.message);
-      } else if ((data as ChatMessageObj).type === "message") {
-        this.messages = [...this.messages, data as ChatMessageObj];
+      }
+      if (!Array.isArray(data) && data.type === "message") {
+        this.messages = [...this.messages, data];
         this.emit(WSEvents.message);
       }
     }
@@ -154,7 +155,7 @@ export class ChatWebSocket extends EventBus<string> {
 
   private clearPingInterval() {
     if (this.pingInterval !== null) {
-      clearInterval(this.pingInterval as number);
+      clearInterval(this.pingInterval);
       this.pingInterval = null;
     }
   }

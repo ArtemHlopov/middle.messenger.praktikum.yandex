@@ -31,8 +31,13 @@ const emailInput = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.email = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.email = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         emailInput,
@@ -51,8 +56,13 @@ const loginInput = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.login = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.login = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         loginInput,
@@ -71,8 +81,13 @@ const userName = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.first_name = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.first_name = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         userName,
@@ -91,8 +106,13 @@ const userSecondName = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.second_name = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.second_name = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         userSecondName,
@@ -111,8 +131,13 @@ const userPhone = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.phone = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.phone = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         userPhone,
@@ -132,7 +157,10 @@ const userPassword = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.password = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.password = target.value;
+      }
     },
 
     focusout: () =>
@@ -154,7 +182,10 @@ const userPasswordRetry = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.passwordVerify = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.passwordVerify = target.value;
+      }
     },
 
     focusout: () =>
@@ -168,77 +199,14 @@ const userPasswordRetry = new InputComponent("div", {
 });
 
 const createButton = new ButtonComponent("div", {
-  link: "chats",
   text: "Create account",
   additionalClass: "button-filled",
+  type: "submit",
   attr: {
     class: "button-wrapper",
   },
-  events: {
-    click: (event: Event) => {
-      const isEmailValid = validatorService.checkEmail(form.email).errorMsg;
-      const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
-      const isNameValid = validatorService.checkName(form.first_name).errorMsg;
-      const isSecondNameValid = validatorService.checkName(
-        form.second_name
-      ).errorMsg;
-      const isPhoneValid = validatorService.checkPhone(form.phone).errorMsg;
-      const isPassValid = validatorService.checkPassword(
-        form.password
-      ).errorMsg;
-      const isPasVeryValid = validatorService.checkPasswordVerify(
-        form.password,
-        form.passwordVerify
-      ).errorMsg;
-
-      if (
-        isEmailValid ||
-        isLoginValid ||
-        isPassValid ||
-        isNameValid ||
-        isSecondNameValid ||
-        isPhoneValid ||
-        isPasVeryValid
-      ) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (isEmailValid) {
-          setValidationProps(emailInput, form.email, isEmailValid);
-        }
-        if (isLoginValid) {
-          setValidationProps(loginInput, form.login, isLoginValid);
-        }
-        if (isNameValid) {
-          setValidationProps(userName, form.first_name, isNameValid);
-        }
-        if (isSecondNameValid) {
-          setValidationProps(
-            userSecondName,
-            form.second_name,
-            isSecondNameValid
-          );
-        }
-        if (isPhoneValid) {
-          setValidationProps(userPhone, form.phone, isPhoneValid);
-        }
-        if (isPassValid) {
-          setValidationProps(userPassword, form.password, isPassValid);
-        }
-        if (isPasVeryValid) {
-          setValidationProps(
-            userPasswordRetry,
-            form.passwordVerify,
-            isPasVeryValid
-          );
-        }
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { passwordVerify, ...formWithoutPasswordVerify } = form;
-        AuthService.register(formWithoutPasswordVerify);
-      }
-    },
-  },
 });
+
 const signInButton = new ButtonComponent("div", {
   link: "login",
   text: "Sign in",
@@ -269,7 +237,76 @@ export class RegistrationPageComponent extends Block {
       title: "Registration",
       attr: {
         class: "auth-block",
-        style: "width:580px", //to normal display all errors msg
+        style: "width:580px",
+      },
+      events: {
+        submit: async (event: Event) => {
+          event.preventDefault();
+          const isEmailValid = validatorService.checkEmail(form.email).errorMsg;
+          const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
+          const isNameValid = validatorService.checkName(
+            form.first_name
+          ).errorMsg;
+          const isSecondNameValid = validatorService.checkName(
+            form.second_name
+          ).errorMsg;
+          const isPhoneValid = validatorService.checkPhone(form.phone).errorMsg;
+          const isPassValid = validatorService.checkPassword(
+            form.password
+          ).errorMsg;
+          const isPasVeryValid = validatorService.checkPasswordVerify(
+            form.password,
+            form.passwordVerify
+          ).errorMsg;
+
+          if (
+            isEmailValid ||
+            isLoginValid ||
+            isPassValid ||
+            isNameValid ||
+            isSecondNameValid ||
+            isPhoneValid ||
+            isPasVeryValid
+          ) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (isEmailValid) {
+              setValidationProps(emailInput, form.email, isEmailValid);
+            }
+            if (isLoginValid) {
+              setValidationProps(loginInput, form.login, isLoginValid);
+            }
+            if (isNameValid) {
+              setValidationProps(userName, form.first_name, isNameValid);
+            }
+            if (isSecondNameValid) {
+              setValidationProps(
+                userSecondName,
+                form.second_name,
+                isSecondNameValid
+              );
+            }
+            if (isPhoneValid) {
+              setValidationProps(userPhone, form.phone, isPhoneValid);
+            }
+            if (isPassValid) {
+              setValidationProps(userPassword, form.password, isPassValid);
+            }
+            if (isPasVeryValid) {
+              setValidationProps(
+                userPasswordRetry,
+                form.passwordVerify,
+                isPasVeryValid
+              );
+            }
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { passwordVerify, ...formWithoutPasswordVerify } = form;
+            await AuthService.register(formWithoutPasswordVerify).catch(
+              console.log
+            );
+          }
+        },
       },
     });
   }

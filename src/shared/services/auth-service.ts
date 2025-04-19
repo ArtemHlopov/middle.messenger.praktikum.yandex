@@ -3,10 +3,8 @@ import { Router } from "../../router/router";
 import { UserInfo, UserLogin, UserRegistration } from "../models/auth.models";
 import { RoutesLinks } from "../models/models";
 
-const authApi = new AuthAPI();
-
 export const login = async (loginForm: UserLogin): Promise<void> => {
-  await authApi.login(loginForm).then(async (data) => {
+  await AuthAPI.login(loginForm).then(async (data) => {
     if (
       data === "OK" ||
       (data.reason && data.reason === "User already in system")
@@ -21,18 +19,18 @@ export const login = async (loginForm: UserLogin): Promise<void> => {
 export const register = async (
   registerForm: UserRegistration
 ): Promise<void> => {
-  await authApi
-    .registration(registerForm)
+  await AuthAPI.registration(registerForm)
     .then(async () => {
       await userInfo();
       Router.getInstance().go(RoutesLinks.chats);
     })
-    .catch(console.log);
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const userInfo = async () => {
-  await authApi
-    .userInfo()
+  await AuthAPI.userInfo()
     .then(async (user) => {
       if (!user.reason) {
         window.store.set({ user: user as UserInfo });
@@ -42,11 +40,13 @@ export const userInfo = async () => {
         }
       }
     })
-    .catch(console.error);
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const logout = async () => {
-  await authApi.logout().then(() => {
+  await AuthAPI.logout().then(() => {
     Router.getInstance().go(RoutesLinks.login);
     window.store.set({ user: null });
   });

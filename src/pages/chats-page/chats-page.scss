@@ -31,7 +31,12 @@
 
       &.new-chat-btn {
         color: style.$white;
+        margin-top: 0.5rem;
       }
+    }
+
+    form {
+      width: 100%;
     }
 
     input {

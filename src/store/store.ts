@@ -35,7 +35,7 @@ export class Store extends EventBus<string> {
     Store._instance = this;
   }
 
-  public getState() {
+  public getState(): StoreObj {
     return this._state;
   }
 

@@ -16,12 +16,6 @@ const form = {
   msg: "",
 };
 
-const avatar = new AvatarComponent("div", {
-  ...(window.store?.getState().pickedChat?.chatAvatar && {
-    avatarLink: window.store.getState().pickedChat?.chatAvatar,
-  }),
-});
-
 const sendMsgInput = new InputComponent("div", {
   type: "text",
   name: "modal-input",
@@ -32,8 +26,12 @@ const sendMsgInput = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.msg = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.msg = target.value;
+      }
+    },
   },
 });
 
@@ -44,25 +42,21 @@ const modal = new ChatSettingsModalComponent({
 
 export class ChatComponent extends Block {
   constructor() {
+    const avatar = new AvatarComponent("div", {
+      ...(window.store?.getState().pickedChat?.chatAvatar && {
+        avatarLink: window.store.getState().pickedChat?.chatAvatar,
+      }),
+    });
+
     const sendMessageBth = new ButtonComponent("div", {
       text: "→",
       attr: {
         class: "button-wrapper",
       },
+      type: "submit",
       class: "new-msg-button send-message",
-      events: {
-        click: () => {
-          if (form.msg) {
-            this.sendMessage(form.msg);
-            const input = document.querySelector(".chat-input");
-            if (input) {
-              (input as HTMLInputElement).value = "";
-              form.msg = "";
-            }
-          }
-        },
-      },
     });
+
     super("div", {
       modal,
       sendMsgInput,
@@ -70,6 +64,20 @@ export class ChatComponent extends Block {
       sendMessageBth,
       title: window.store?.getState().pickedChat?.chatTitle || "Chat",
       attr: { class: "chat-preview-block" },
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (form.msg) {
+            this.sendMessage(form.msg);
+            const input = document.querySelector(".chat-input");
+            if (input && input instanceof HTMLInputElement) {
+              input.value = "";
+              form.msg = "";
+            }
+          }
+        },
+      },
     });
     wsChat.on(WSEvents.message, this.handleMessage.bind(this));
   }

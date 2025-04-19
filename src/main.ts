@@ -20,18 +20,22 @@ window.store = new Store({
   tokenChat: "",
 });
 
-const router = new Router();
-router
-  .use(RoutesLinks.login, pagesList.login)
-  .use(RoutesLinks.registration, pagesList.registration)
-  .use(RoutesLinks.chats, pagesList.chats)
-  .use(RoutesLinks.profile, pagesList.profile)
-  .use(RoutesLinks.changeProfile, pagesList.changeProfile)
-  .use(RoutesLinks.changePassword, pagesList.changePassword)
-  .use(RoutesLinks.serverError, pagesList.serverError)
-  .use(RoutesLinks.clientError, pagesList.clientError)
-  .start();
-
 document.addEventListener("DOMContentLoaded", async () => {
-  await AuthService.userInfo();
+  try {
+    await AuthService.userInfo();
+  } catch (error) {
+    console.log("Auth failed", error);
+  } finally {
+    const router = new Router();
+    router
+      .use(RoutesLinks.login, pagesList.login)
+      .use(RoutesLinks.registration, pagesList.registration)
+      .use(RoutesLinks.chats, pagesList.chats)
+      .use(RoutesLinks.profile, pagesList.profile)
+      .use(RoutesLinks.changeProfile, pagesList.changeProfile)
+      .use(RoutesLinks.changePassword, pagesList.changePassword)
+      .use(RoutesLinks.serverError, pagesList.serverError)
+      .use(RoutesLinks.clientError, pagesList.clientError)
+      .start();
+  }
 });

@@ -6,9 +6,7 @@ import {
   UserLoginResponseObj,
   UserSearchObj,
 } from "../shared/models/auth.models";
-import { HTTPTransport, RequestBody } from "../shared/utils/httpClient";
-
-const userApi = new HTTPTransport();
+import HTTPTransport, { RequestBody } from "../shared/utils/httpClient";
 
 const options = {
   mode: "cors",
@@ -17,19 +15,18 @@ const options = {
     ["Content-Type"]: "application/json; charset=utf-8",
   },
 };
-
-export default class UserAPI {
+class UserAPI {
   async changeUserData(
     data: UserDataForChange
   ): Promise<UserInfo | { reason: string }> {
-    return userApi.put(API.changeUserData, { ...options, data });
+    return HTTPTransport.put(API.changeUserData, { ...options, data });
   }
 
   async changeUserAvatar(data: File): Promise<UserInfo> {
     const formData = new FormData();
     formData.append("avatar", data);
 
-    return userApi.put(API.changeUserAvatar, {
+    return HTTPTransport.put(API.changeUserAvatar, {
       data: formData as unknown as RequestBody,
     });
   }
@@ -37,10 +34,12 @@ export default class UserAPI {
   async changeUserPassword(
     data: UserChangePasswordObj
   ): Promise<UserLoginResponseObj> {
-    return userApi.put(API.changeUserPasswor, { ...options, data });
+    return HTTPTransport.put(API.changeUserPasswor, { ...options, data });
   }
 
   async searchUserByLogin(data: UserSearchObj) {
-    return userApi.post(API.searchUserByLogin, { ...options, data });
+    return HTTPTransport.post(API.searchUserByLogin, { ...options, data });
   }
 }
+
+export default new UserAPI();

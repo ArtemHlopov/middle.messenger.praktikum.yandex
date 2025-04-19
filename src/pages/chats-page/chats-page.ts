@@ -11,13 +11,14 @@ import { RoutesLinks } from "../../shared/models/models";
 import * as ChatService from "../../shared/services/chats-service";
 import { ChatComponent } from "../../shared/components/chat/chat";
 import { debounce, formatDateToMSgType } from "../../shared/utils/helpers";
+import { API } from "../../shared/models/api";
 
 const form = {
   search: "",
 };
 
 const debouncedSearch = debounce(() => {
-  ChatService.getChatList(form.search);
+  ChatService.getChatList(form.search).catch(console.log);
 }, 1000);
 
 const searchInput = new InputComponent("div", {
@@ -31,8 +32,11 @@ const searchInput = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.search = (event.target as HTMLInputElement).value;
-      debouncedSearch();
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.search = target.value;
+        debouncedSearch();
+      }
     },
   },
 });
@@ -74,13 +78,11 @@ const goToProfilePageButton = new ButtonComponent("div", {
 
 const createChatBtn = new ButtonComponent("div", {
   text: "Create chat",
+  type: "submit",
   attr: {
     class: "button-wrapper",
   },
   additionalClass: "button-filled new-chat-btn",
-  events: {
-    click: () => ChatService.createChat({ title: form.search }),
-  },
 });
 
 const buttons = [
@@ -101,6 +103,14 @@ export class ChatsPageComponent extends Block {
       attr: {
         class: "chats-page-wrapper",
       },
+      events: {
+        submit: async (event: Event) => {
+          event.preventDefault();
+          await ChatService.createChat({ title: form.search }).catch(
+            console.log
+          );
+        },
+      },
     });
     window.store.on("Updated", this.updateChats.bind(this));
     this.loadChatList();
@@ -109,37 +119,34 @@ export class ChatsPageComponent extends Block {
 
   async loadChatList(): Promise<void> {
     const input = document.querySelector(".search-input");
-    if (input) {
-      (input as HTMLInputElement).value = "";
+    if (input && input instanceof HTMLInputElement) {
+      input.value = "";
       form.search = "";
     }
     if (!this.isChatsLoaded) {
       this.isChatsLoaded = true;
-      await ChatService.getChatList();
+      await ChatService.getChatList().catch(console.log);
     }
   }
 
   updateChats(): void {
     let updatedChats: ChatListItemComponent[];
-    if (
-      window.store.getState().chats &&
-      window.store.getState().chats?.length
-    ) {
-      updatedChats = window.store
-        .getState()
-        .chats?.map(
-          (chat) =>
-            new ChatListItemComponent(
-              chat.id,
-              chat.title,
-              chat.last_message?.content || "",
-              chat.last_message?.time
-                ? formatDateToMSgType(chat.last_message?.time)
-                : "",
-              chat.unread_count,
-              chat.avatar || ""
-            )
-        ) as ChatListItemComponent[];
+    const storeChatsList = window.store.getState().chats;
+
+    if (storeChatsList && storeChatsList.length) {
+      updatedChats = storeChatsList.map(
+        (chat) =>
+          new ChatListItemComponent(
+            chat.id,
+            chat.title,
+            chat.last_message?.content || "",
+            chat.last_message?.time
+              ? formatDateToMSgType(chat.last_message?.time)
+              : "",
+            chat.unread_count,
+            chat.avatar ? API.uploadFileToServer + chat.avatar : ""
+          )
+      );
     } else {
       updatedChats = [];
     }
