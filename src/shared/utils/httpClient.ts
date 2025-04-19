@@ -20,7 +20,11 @@ type HTTPMethod = <T = unknown>(url: string, options?: Options) => Promise<T>;
 const queryStringify = (data: RequestBody): string => {
   const keys = Object.keys(data);
   return keys.reduce((result, key, index) => {
-    return `${result}${key}=${data[key]}${index < keys.length - 1 ? "&" : ""}`;
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(String(data[key]));
+    return `${result}${encodedKey}=${encodedValue}${
+      index < keys.length - 1 ? "&" : ""
+    }`;
   }, "?");
 };
 
