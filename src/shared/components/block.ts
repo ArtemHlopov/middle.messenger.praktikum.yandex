@@ -242,6 +242,7 @@ export class Block {
     return fragment.content;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setPropsForChildren(children: Block | Block[], newProps: any) {
     if (Array.isArray(children)) {
       children.forEach((child) => {
