@@ -75,13 +75,11 @@ const goToProfilePageButton = new ButtonComponent("div", {
 
 const createChatBtn = new ButtonComponent("div", {
   text: "Create chat",
+  type: "submit",
   attr: {
     class: "button-wrapper",
   },
   additionalClass: "button-filled new-chat-btn",
-  events: {
-    click: () => ChatService.createChat({ title: form.search }),
-  },
 });
 
 const buttons = [
@@ -101,6 +99,12 @@ export class ChatsPageComponent extends Block {
       buttons,
       attr: {
         class: "chats-page-wrapper",
+      },
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          ChatService.createChat({ title: form.search });
+        },
       },
     });
     window.store.on("Updated", this.updateChats.bind(this));

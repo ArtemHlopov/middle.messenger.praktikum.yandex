@@ -92,50 +92,11 @@ const passwordVerify = new InputComponent("div", {
 const inputs = [oldPassword, newPassword, passwordVerify];
 
 const button = new ButtonComponent("div", {
-  link: "chats",
   text: "Save",
   additionalClass: "button-filled",
+  type: "submit",
   attr: {
     class: "button-wrapper",
-  },
-  events: {
-    click: (event: Event) => {
-      const isOldPassValid = validatorService.checkPassword(
-        form.oldPassword
-      ).errorMsg;
-      const isNewPassValid = validatorService.checkPassword(
-        form.newPassword
-      ).errorMsg;
-      const isPasVeryValid = validatorService.checkPasswordVerify(
-        form.newPassword,
-        form.verifyPas
-      ).errorMsg;
-
-      if (isOldPassValid || isNewPassValid || isPasVeryValid) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (isOldPassValid) {
-          setValidationProps(oldPassword, form.oldPassword, isOldPassValid);
-        }
-        if (isNewPassValid) {
-          setValidationProps(newPassword, form.newPassword, isNewPassValid);
-        }
-        if (isPasVeryValid) {
-          setValidationProps(passwordVerify, form.verifyPas, isPasVeryValid);
-        }
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { verifyPas, ...passwordData } = form;
-        UserService.changeUserPassword(passwordData).then((response) => {
-          if (response === "OK") {
-            Router.getInstance().go(RoutesLinks.chats);
-          } else {
-            passwordVerify.setProps({ errorText: "Check entered passwords" });
-          }
-        });
-      }
-    },
   },
 });
 const avatar = new AvatarComponent("div", {
@@ -150,6 +111,51 @@ export class ProfilePasswordPageComponent extends Block {
       button,
       attr: {
         class: "profile-change-page-wrapper",
+      },
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const isOldPassValid = validatorService.checkPassword(
+            form.oldPassword
+          ).errorMsg;
+          const isNewPassValid = validatorService.checkPassword(
+            form.newPassword
+          ).errorMsg;
+          const isPasVeryValid = validatorService.checkPasswordVerify(
+            form.newPassword,
+            form.verifyPas
+          ).errorMsg;
+
+          if (isOldPassValid || isNewPassValid || isPasVeryValid) {
+            event.stopPropagation();
+
+            if (isOldPassValid) {
+              setValidationProps(oldPassword, form.oldPassword, isOldPassValid);
+            }
+            if (isNewPassValid) {
+              setValidationProps(newPassword, form.newPassword, isNewPassValid);
+            }
+            if (isPasVeryValid) {
+              setValidationProps(
+                passwordVerify,
+                form.verifyPas,
+                isPasVeryValid
+              );
+            }
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { verifyPas, ...passwordData } = form;
+            UserService.changeUserPassword(passwordData).then((response) => {
+              if (response === "OK") {
+                Router.getInstance().go(RoutesLinks.chats);
+              } else {
+                passwordVerify.setProps({
+                  errorText: "Check entered passwords",
+                });
+              }
+            });
+          }
+        },
       },
     });
     window.store.on("Updated", this.updateProps.bind(this));

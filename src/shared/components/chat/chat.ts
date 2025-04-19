@@ -49,9 +49,21 @@ export class ChatComponent extends Block {
       attr: {
         class: "button-wrapper",
       },
+      type: "submit",
       class: "new-msg-button send-message",
+    });
+
+    super("div", {
+      modal,
+      sendMsgInput,
+      avatar,
+      sendMessageBth,
+      title: window.store?.getState().pickedChat?.chatTitle || "Chat",
+      attr: { class: "chat-preview-block" },
       events: {
-        click: () => {
+        submit: (event: Event) => {
+          event.preventDefault();
+          event.stopPropagation();
           if (form.msg) {
             this.sendMessage(form.msg);
             const input = document.querySelector(".chat-input");
@@ -62,14 +74,6 @@ export class ChatComponent extends Block {
           }
         },
       },
-    });
-    super("div", {
-      modal,
-      sendMsgInput,
-      avatar,
-      sendMessageBth,
-      title: window.store?.getState().pickedChat?.chatTitle || "Chat",
-      attr: { class: "chat-preview-block" },
     });
     wsChat.on(WSEvents.message, this.handleMessage.bind(this));
   }

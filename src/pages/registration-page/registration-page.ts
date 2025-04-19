@@ -168,77 +168,14 @@ const userPasswordRetry = new InputComponent("div", {
 });
 
 const createButton = new ButtonComponent("div", {
-  link: "chats",
   text: "Create account",
   additionalClass: "button-filled",
+  type: "submit",
   attr: {
     class: "button-wrapper",
   },
-  events: {
-    click: (event: Event) => {
-      const isEmailValid = validatorService.checkEmail(form.email).errorMsg;
-      const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
-      const isNameValid = validatorService.checkName(form.first_name).errorMsg;
-      const isSecondNameValid = validatorService.checkName(
-        form.second_name
-      ).errorMsg;
-      const isPhoneValid = validatorService.checkPhone(form.phone).errorMsg;
-      const isPassValid = validatorService.checkPassword(
-        form.password
-      ).errorMsg;
-      const isPasVeryValid = validatorService.checkPasswordVerify(
-        form.password,
-        form.passwordVerify
-      ).errorMsg;
-
-      if (
-        isEmailValid ||
-        isLoginValid ||
-        isPassValid ||
-        isNameValid ||
-        isSecondNameValid ||
-        isPhoneValid ||
-        isPasVeryValid
-      ) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (isEmailValid) {
-          setValidationProps(emailInput, form.email, isEmailValid);
-        }
-        if (isLoginValid) {
-          setValidationProps(loginInput, form.login, isLoginValid);
-        }
-        if (isNameValid) {
-          setValidationProps(userName, form.first_name, isNameValid);
-        }
-        if (isSecondNameValid) {
-          setValidationProps(
-            userSecondName,
-            form.second_name,
-            isSecondNameValid
-          );
-        }
-        if (isPhoneValid) {
-          setValidationProps(userPhone, form.phone, isPhoneValid);
-        }
-        if (isPassValid) {
-          setValidationProps(userPassword, form.password, isPassValid);
-        }
-        if (isPasVeryValid) {
-          setValidationProps(
-            userPasswordRetry,
-            form.passwordVerify,
-            isPasVeryValid
-          );
-        }
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { passwordVerify, ...formWithoutPasswordVerify } = form;
-        AuthService.register(formWithoutPasswordVerify);
-      }
-    },
-  },
 });
+
 const signInButton = new ButtonComponent("div", {
   link: "login",
   text: "Sign in",
@@ -269,7 +206,74 @@ export class RegistrationPageComponent extends Block {
       title: "Registration",
       attr: {
         class: "auth-block",
-        style: "width:580px", //to normal display all errors msg
+        style: "width:580px",
+      },
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const isEmailValid = validatorService.checkEmail(form.email).errorMsg;
+          const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
+          const isNameValid = validatorService.checkName(
+            form.first_name
+          ).errorMsg;
+          const isSecondNameValid = validatorService.checkName(
+            form.second_name
+          ).errorMsg;
+          const isPhoneValid = validatorService.checkPhone(form.phone).errorMsg;
+          const isPassValid = validatorService.checkPassword(
+            form.password
+          ).errorMsg;
+          const isPasVeryValid = validatorService.checkPasswordVerify(
+            form.password,
+            form.passwordVerify
+          ).errorMsg;
+
+          if (
+            isEmailValid ||
+            isLoginValid ||
+            isPassValid ||
+            isNameValid ||
+            isSecondNameValid ||
+            isPhoneValid ||
+            isPasVeryValid
+          ) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (isEmailValid) {
+              setValidationProps(emailInput, form.email, isEmailValid);
+            }
+            if (isLoginValid) {
+              setValidationProps(loginInput, form.login, isLoginValid);
+            }
+            if (isNameValid) {
+              setValidationProps(userName, form.first_name, isNameValid);
+            }
+            if (isSecondNameValid) {
+              setValidationProps(
+                userSecondName,
+                form.second_name,
+                isSecondNameValid
+              );
+            }
+            if (isPhoneValid) {
+              setValidationProps(userPhone, form.phone, isPhoneValid);
+            }
+            if (isPassValid) {
+              setValidationProps(userPassword, form.password, isPassValid);
+            }
+            if (isPasVeryValid) {
+              setValidationProps(
+                userPasswordRetry,
+                form.passwordVerify,
+                isPasVeryValid
+              );
+            }
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { passwordVerify, ...formWithoutPasswordVerify } = form;
+            AuthService.register(formWithoutPasswordVerify);
+          }
+        },
       },
     });
   }

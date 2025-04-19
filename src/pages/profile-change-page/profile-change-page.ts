@@ -10,6 +10,8 @@ import {
 } from "../../shared/utils/validator";
 import * as UserService from "../../shared/services/user-service";
 import { UserInfo } from "../../shared/models/auth.models";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const form: Omit<UserInfo, "id"> = {
   email: window.store?.getState().user?.email || "",
@@ -151,73 +153,11 @@ const phone = new InputComponent("div", {
 const inputs = [email, login, firstName, secondName, nickName, phone];
 
 const button = new ButtonComponent("div", {
-  link: "chats",
   text: "Save",
   additionalClass: "button-filled",
+  type: "submit",
   attr: {
     class: "button-wrapper",
-  },
-  events: {
-    click: (event: Event) => {
-      const isEmailValid = validatorService.checkEmail(
-        form.email as string
-      ).errorMsg;
-      const isLoginValid = validatorService.checkLogin(
-        form.login as string
-      ).errorMsg;
-      const isNameValid = validatorService.checkName(
-        form.first_name as string
-      ).errorMsg;
-      const isSecondNameValid = validatorService.checkName(
-        form.second_name as string
-      ).errorMsg;
-      const isPhoneValid = validatorService.checkPhone(
-        form.phone as string
-      ).errorMsg;
-      const isNickValid = validatorService.checkName(
-        form.display_name as string
-      ).errorMsg;
-
-      if (
-        isEmailValid ||
-        isLoginValid ||
-        isNameValid ||
-        isSecondNameValid ||
-        isPhoneValid ||
-        isNickValid
-      ) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (isEmailValid) {
-          setValidationProps(email, form.email as string, isEmailValid);
-        }
-        if (isLoginValid) {
-          setValidationProps(login, form.login as string, isLoginValid);
-        }
-        if (isNameValid) {
-          setValidationProps(firstName, form.first_name as string, isNameValid);
-        }
-        if (isSecondNameValid) {
-          setValidationProps(
-            secondName,
-            form.second_name as string,
-            isSecondNameValid
-          );
-        }
-        if (isPhoneValid) {
-          setValidationProps(phone, form.phone as string, isPhoneValid);
-        }
-        if (isNickValid) {
-          setValidationProps(
-            nickName,
-            form.display_name as string,
-            isNickValid
-          );
-        }
-      } else {
-        UserService.changeUserData(form);
-      }
-    },
   },
 });
 
@@ -240,6 +180,81 @@ export class ProfileChangePageComponent extends Block {
         change: (event) => {
           if (event.target && event.target.files?.[0]) {
             UserService.changeUserAvatar(event.target.files[0]);
+          }
+        },
+        submit: (event: Event) => {
+          event.preventDefault();
+          const isEmailValid = validatorService.checkEmail(
+            form.email as string
+          ).errorMsg;
+          const isLoginValid = validatorService.checkLogin(
+            form.login as string
+          ).errorMsg;
+          const isNameValid = validatorService.checkName(
+            form.first_name as string
+          ).errorMsg;
+          const isSecondNameValid = validatorService.checkName(
+            form.second_name as string
+          ).errorMsg;
+          const isPhoneValid = validatorService.checkPhone(
+            form.phone as string
+          ).errorMsg;
+          const isNickValid = validatorService.checkName(
+            form.display_name as string
+          ).errorMsg;
+
+          if (
+            isEmailValid ||
+            isLoginValid ||
+            isNameValid ||
+            isSecondNameValid ||
+            isPhoneValid ||
+            isNickValid
+          ) {
+            event.stopPropagation();
+            if (isEmailValid) {
+              setValidationProps(email, form.email as string, isEmailValid);
+            }
+            if (isLoginValid) {
+              setValidationProps(login, form.login as string, isLoginValid);
+            }
+            if (isNameValid) {
+              setValidationProps(
+                firstName,
+                form.first_name as string,
+                isNameValid
+              );
+            }
+            if (isSecondNameValid) {
+              setValidationProps(
+                secondName,
+                form.second_name as string,
+                isSecondNameValid
+              );
+            }
+            if (isPhoneValid) {
+              setValidationProps(phone, form.phone as string, isPhoneValid);
+            }
+            if (isNickValid) {
+              setValidationProps(
+                nickName,
+                form.display_name as string,
+                isNickValid
+              );
+            }
+          } else {
+            UserService.changeUserData(form)
+              .then(async (data) => {
+                if (data && "id" in data) {
+                  window.store.set({ user: data });
+                  Router.getInstance().go(RoutesLinks.chats);
+                } else {
+                  phone.setProps({
+                    errorText: "Troubles with updating profile",
+                  });
+                }
+              })
+              .catch(console.log);
           }
         },
       },

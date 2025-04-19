@@ -1,4 +1,4 @@
-  {{#if labelText}}<label for="{{id}}" class="label">{{labelText}}</label>{{/if}}
+  {{#if labelText}}<label {{#if id}}for="{{id}}"{{/if}} class="label">{{labelText}}</label>{{/if}}
   <input
     type="{{type}}"
     name="{{name}}"

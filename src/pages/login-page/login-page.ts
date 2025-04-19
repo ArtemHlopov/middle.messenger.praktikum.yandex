@@ -56,41 +56,11 @@ const passwordInput = new InputComponent("div", {
 });
 
 const signInButton = new ButtonComponent("div", {
-  link: PagesNames.chats,
   text: "Sign in",
   additionalClass: "button-filled",
+  type: "submit",
   attr: {
     class: "button-wrapper",
-  },
-  events: {
-    click: async (event: Event) => {
-      const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
-      const isPassValid = validatorService.checkPassword(
-        form.password
-      ).errorMsg;
-
-      if (isLoginValid || isPassValid) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (isLoginValid) {
-          setValidationProps(emailInput, form.login, isLoginValid);
-        }
-        if (isPassValid) {
-          setValidationProps(passwordInput, form.password, isPassValid);
-        }
-      } else {
-        try {
-          await AuthService.login(form);
-          Router.getInstance().go(RoutesLinks.chats);
-        } catch {
-          setValidationProps(
-            passwordInput,
-            form.password,
-            "Login or password isn't correct"
-          );
-        }
-      }
-    },
   },
 });
 
@@ -116,6 +86,37 @@ export class LoginPageComponent extends Block {
       title: "Login",
       attr: {
         class: "auth-block",
+      },
+      events: {
+        submit: async (event: Event) => {
+          event.preventDefault();
+          const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
+          const isPassValid = validatorService.checkPassword(
+            form.password
+          ).errorMsg;
+
+          if (isLoginValid || isPassValid) {
+            // event.preventDefault();
+            event.stopPropagation();
+            if (isLoginValid) {
+              setValidationProps(emailInput, form.login, isLoginValid);
+            }
+            if (isPassValid) {
+              setValidationProps(passwordInput, form.password, isPassValid);
+            }
+          } else {
+            try {
+              await AuthService.login(form);
+              Router.getInstance().go(RoutesLinks.chats);
+            } catch {
+              setValidationProps(
+                passwordInput,
+                form.password,
+                "Login or password isn't correct"
+              );
+            }
+          }
+        },
       },
     });
   }
