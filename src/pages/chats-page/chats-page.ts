@@ -32,8 +32,11 @@ const searchInput = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.search = (event.target as HTMLInputElement).value;
-      debouncedSearch();
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.search = target.value;
+        debouncedSearch();
+      }
     },
   },
 });
@@ -114,8 +117,8 @@ export class ChatsPageComponent extends Block {
 
   async loadChatList(): Promise<void> {
     const input = document.querySelector(".search-input");
-    if (input) {
-      (input as HTMLInputElement).value = "";
+    if (input && input instanceof HTMLInputElement) {
+      input.value = "";
       form.search = "";
     }
     if (!this.isChatsLoaded) {
@@ -126,25 +129,22 @@ export class ChatsPageComponent extends Block {
 
   updateChats(): void {
     let updatedChats: ChatListItemComponent[];
-    if (
-      window.store.getState().chats &&
-      window.store.getState().chats?.length
-    ) {
-      updatedChats = window.store
-        .getState()
-        .chats?.map(
-          (chat) =>
-            new ChatListItemComponent(
-              chat.id,
-              chat.title,
-              chat.last_message?.content || "",
-              chat.last_message?.time
-                ? formatDateToMSgType(chat.last_message?.time)
-                : "",
-              chat.unread_count,
-              chat.avatar ? API.uploadFileToServer + chat.avatar : ""
-            )
-        ) as ChatListItemComponent[];
+    const storeChatsList = window.store.getState().chats;
+
+    if (storeChatsList && storeChatsList.length) {
+      updatedChats = storeChatsList.map(
+        (chat) =>
+          new ChatListItemComponent(
+            chat.id,
+            chat.title,
+            chat.last_message?.content || "",
+            chat.last_message?.time
+              ? formatDateToMSgType(chat.last_message?.time)
+              : "",
+            chat.unread_count,
+            chat.avatar ? API.uploadFileToServer + chat.avatar : ""
+          )
+      );
     } else {
       updatedChats = [];
     }

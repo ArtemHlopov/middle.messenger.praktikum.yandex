@@ -26,8 +26,12 @@ const sendMsgInput = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.msg = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.msg = target.value;
+      }
+    },
   },
 });
 
@@ -67,8 +71,8 @@ export class ChatComponent extends Block {
           if (form.msg) {
             this.sendMessage(form.msg);
             const input = document.querySelector(".chat-input");
-            if (input) {
-              (input as HTMLInputElement).value = "";
+            if (input && input instanceof HTMLInputElement) {
+              input.value = "";
               form.msg = "";
             }
           }

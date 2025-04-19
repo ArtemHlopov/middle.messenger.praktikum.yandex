@@ -50,8 +50,11 @@ export class ChatSettingsModalComponent extends Block {
       attr: { class: "modal-input" },
       placeholder: "Enter user id",
       events: {
-        input: (e: Event) => {
-          this.inputValue = (e.target as HTMLInputElement).value;
+        input: (event: Event) => {
+          const target = event?.target;
+          if (target instanceof HTMLInputElement) {
+            this.inputValue = target.value;
+          }
         },
       },
     });
@@ -95,9 +98,12 @@ export class ChatSettingsModalComponent extends Block {
             return;
           }
 
-          const submitter = event.submitter as HTMLButtonElement;
+          const submitter = event.submitter;
 
-          if (submitter.classList.contains(buttonsNames.removeChat)) {
+          if (
+            submitter instanceof HTMLButtonElement &&
+            submitter.classList.contains(buttonsNames.removeChat)
+          ) {
             const id = Number(window.store.getState().pickedChat?.chatId);
             if (id && !isNaN(id)) {
               ChatsService.removeChat(id).then((data) => {
@@ -118,7 +124,7 @@ export class ChatSettingsModalComponent extends Block {
           const number = convertToNumber(this.inputValue);
           const chatID = window.store.getState().pickedChat?.chatId;
 
-          if (number && chatID) {
+          if (number && chatID && submitter instanceof HTMLButtonElement) {
             if (submitter.classList.contains(buttonsNames.deleteUser)) {
               ChatsService.removeUserFromChat({
                 users: [number],

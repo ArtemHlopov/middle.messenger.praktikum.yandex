@@ -31,8 +31,13 @@ const emailInput = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.email = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.email = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         emailInput,
@@ -51,8 +56,13 @@ const loginInput = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.login = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.login = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         loginInput,
@@ -71,8 +81,13 @@ const userName = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.first_name = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.first_name = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         userName,
@@ -91,8 +106,13 @@ const userSecondName = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.second_name = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.second_name = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         userSecondName,
@@ -111,8 +131,13 @@ const userPhone = new InputComponent("div", {
     class: "input-wrapper",
   },
   events: {
-    input: (event: Event) =>
-      (form.phone = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.phone = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         userPhone,
@@ -132,7 +157,10 @@ const userPassword = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.password = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.password = target.value;
+      }
     },
 
     focusout: () =>
@@ -154,7 +182,10 @@ const userPasswordRetry = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.passwordVerify = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.passwordVerify = target.value;
+      }
     },
 
     focusout: () =>

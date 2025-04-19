@@ -24,8 +24,13 @@ const emailInput = new InputComponent("div", {
   placeholder: "example",
   attr: { "custom-id": "user-login", class: "input-wrapper" },
   events: {
-    input: (event: Event) =>
-      (form.login = (event.target as HTMLInputElement).value),
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.login = target.value;
+      }
+    },
+
     focusout: () =>
       setValidationProps(
         emailInput,
@@ -43,7 +48,10 @@ const passwordInput = new InputComponent("div", {
   attr: { "custom-id": "user-password", class: "input-wrapper" },
   events: {
     input: (event: Event) => {
-      form.password = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.password = target.value;
+      }
     },
 
     focusout: () =>

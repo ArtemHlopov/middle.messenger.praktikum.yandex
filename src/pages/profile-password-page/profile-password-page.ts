@@ -30,7 +30,10 @@ const newPassword = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.newPassword = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.newPassword = target.value;
+      }
     },
 
     focusout: () =>
@@ -53,7 +56,10 @@ const oldPassword = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.oldPassword = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.oldPassword = target.value;
+      }
     },
 
     focusout: () =>
@@ -76,7 +82,10 @@ const passwordVerify = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.verifyPas = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.verifyPas = target.value;
+      }
     },
 
     focusout: () =>

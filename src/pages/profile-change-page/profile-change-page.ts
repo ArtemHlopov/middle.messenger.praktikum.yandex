@@ -9,11 +9,20 @@ import {
   validatorService,
 } from "../../shared/utils/validator";
 import * as UserService from "../../shared/services/user-service";
-import { UserInfo } from "../../shared/models/auth.models";
 import { Router } from "../../router/router";
-import { RoutesLinks } from "../../shared/models/models";
+import { Indexed, RoutesLinks } from "../../shared/models/models";
 
-const form: Omit<UserInfo, "id"> = {
+interface profileChangePageForm extends Indexed {
+  email: string;
+  login: string;
+  first_name: string;
+  second_name: string;
+  display_name: string;
+  phone: string;
+  avatar: string | null;
+}
+
+const form: profileChangePageForm = {
   email: window.store?.getState().user?.email || "",
   login: window.store?.getState().user?.login || "",
   first_name: window.store?.getState().user?.first_name || "",
@@ -33,14 +42,20 @@ const email = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.email = (event.target as HTMLInputElement).value),
-    focusout: () =>
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.email = target.value;
+      }
+    },
+
+    focusout: () => {
       setValidationProps(
         email,
-        form.email as string,
-        validatorService.checkEmail(form.email as string).errorMsg
-      ),
+        form.email,
+        validatorService.checkEmail(form.email).errorMsg
+      );
+    },
   },
 });
 const login = new InputComponent("div", {
@@ -54,14 +69,19 @@ const login = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.login = (event.target as HTMLInputElement).value),
-    focusout: () =>
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.login = target.value;
+      }
+    },
+    focusout: () => {
       setValidationProps(
         login,
-        form.login as string,
-        validatorService.checkLogin(form.login as string).errorMsg
-      ),
+        form.login,
+        validatorService.checkLogin(form.login).errorMsg
+      );
+    },
   },
 });
 const firstName = new InputComponent("div", {
@@ -75,14 +95,19 @@ const firstName = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.first_name = (event.target as HTMLInputElement).value),
-    focusout: () =>
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.first_name = target.value;
+      }
+    },
+    focusout: () => {
       setValidationProps(
         firstName,
-        form.first_name as string,
-        validatorService.checkName(form.first_name as string).errorMsg
-      ),
+        form.first_name,
+        validatorService.checkName(form.first_name).errorMsg
+      );
+    },
   },
 });
 const secondName = new InputComponent("div", {
@@ -96,14 +121,19 @@ const secondName = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.second_name = (event.target as HTMLInputElement).value),
-    focusout: () =>
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.second_name = target.value;
+      }
+    },
+    focusout: () => {
       setValidationProps(
         secondName,
-        form.second_name as string,
-        validatorService.checkName(form.second_name as string).errorMsg
-      ),
+        form.second_name,
+        validatorService.checkName(form.second_name).errorMsg
+      );
+    },
   },
 });
 
@@ -118,14 +148,19 @@ const nickName = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.display_name = (event.target as HTMLInputElement).value),
-    focusout: () =>
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.display_name = target.value;
+      }
+    },
+    focusout: () => {
       setValidationProps(
         nickName,
-        form.display_name as string,
-        validatorService.checkName(form.display_name as string).errorMsg
-      ),
+        form.display_name,
+        validatorService.checkName(form.display_name).errorMsg
+      );
+    },
   },
 });
 
@@ -140,14 +175,19 @@ const phone = new InputComponent("div", {
     class: "profile-form-control",
   },
   events: {
-    input: (event: Event) =>
-      (form.phone = (event.target as HTMLInputElement).value),
-    focusout: () =>
+    input: (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.phone = target.value;
+      }
+    },
+    focusout: () => {
       setValidationProps(
         phone,
-        form.phone as string,
-        validatorService.checkPhone(form.phone as string).errorMsg
-      ),
+        form.phone,
+        validatorService.checkPhone(form.phone).errorMsg
+      );
+    },
   },
 });
 const inputs = [email, login, firstName, secondName, nickName, phone];
@@ -197,23 +237,17 @@ export class ProfileChangePageComponent extends Block {
         },
         submit: (event: Event) => {
           event.preventDefault();
-          const isEmailValid = validatorService.checkEmail(
-            form.email as string
-          ).errorMsg;
-          const isLoginValid = validatorService.checkLogin(
-            form.login as string
-          ).errorMsg;
+          const isEmailValid = validatorService.checkEmail(form.email).errorMsg;
+          const isLoginValid = validatorService.checkLogin(form.login).errorMsg;
           const isNameValid = validatorService.checkName(
-            form.first_name as string
+            form.first_name
           ).errorMsg;
           const isSecondNameValid = validatorService.checkName(
-            form.second_name as string
+            form.second_name
           ).errorMsg;
-          const isPhoneValid = validatorService.checkPhone(
-            form.phone as string
-          ).errorMsg;
+          const isPhoneValid = validatorService.checkPhone(form.phone).errorMsg;
           const isNickValid = validatorService.checkName(
-            form.display_name as string
+            form.display_name
           ).errorMsg;
 
           if (
@@ -226,34 +260,26 @@ export class ProfileChangePageComponent extends Block {
           ) {
             event.stopPropagation();
             if (isEmailValid) {
-              setValidationProps(email, form.email as string, isEmailValid);
+              setValidationProps(email, form.email, isEmailValid);
             }
             if (isLoginValid) {
-              setValidationProps(login, form.login as string, isLoginValid);
+              setValidationProps(login, form.login, isLoginValid);
             }
             if (isNameValid) {
-              setValidationProps(
-                firstName,
-                form.first_name as string,
-                isNameValid
-              );
+              setValidationProps(firstName, form.first_name, isNameValid);
             }
             if (isSecondNameValid) {
               setValidationProps(
                 secondName,
-                form.second_name as string,
+                form.second_name,
                 isSecondNameValid
               );
             }
             if (isPhoneValid) {
-              setValidationProps(phone, form.phone as string, isPhoneValid);
+              setValidationProps(phone, form.phone, isPhoneValid);
             }
             if (isNickValid) {
-              setValidationProps(
-                nickName,
-                form.display_name as string,
-                isNickValid
-              );
+              setValidationProps(nickName, form.display_name, isNickValid);
             }
           } else {
             UserService.changeUserData(form)
