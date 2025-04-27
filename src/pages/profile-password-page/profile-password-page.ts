@@ -9,10 +9,13 @@ import {
   setValidationProps,
   validatorService,
 } from "../../shared/utils/validator";
+import * as UserService from "../../shared/services/user-service";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
 
 const form = {
-  oldPas: "example",
-  newPas: "example",
+  oldPassword: "example",
+  newPassword: "example",
   verifyPas: "example",
 };
 
@@ -20,21 +23,24 @@ const newPassword = new InputComponent("div", {
   type: "password",
   labelText: "New password",
   name: "newPassword",
-  value: form.newPas,
+  value: form.newPassword,
   attr: {
     "custom-id": "newPassword",
     class: "profile-form-control",
   },
   events: {
     input: (event: Event) => {
-      form.newPas = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.newPassword = target.value;
+      }
     },
 
     focusout: () =>
       setValidationProps(
         newPassword,
-        form.newPas,
-        validatorService.checkPassword(form.newPas).errorMsg
+        form.newPassword,
+        validatorService.checkPassword(form.newPassword).errorMsg
       ),
   },
 });
@@ -43,21 +49,24 @@ const oldPassword = new InputComponent("div", {
   type: "password",
   labelText: "Password",
   name: "oldPassword",
-  value: form.oldPas,
+  value: form.oldPassword,
   attr: {
     "custom-id": "oldPassword",
     class: "profile-form-control",
   },
   events: {
     input: (event: Event) => {
-      form.oldPas = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.oldPassword = target.value;
+      }
     },
 
     focusout: () =>
       setValidationProps(
         oldPassword,
-        form.oldPas,
-        validatorService.checkPassword(form.oldPas).errorMsg
+        form.oldPassword,
+        validatorService.checkPassword(form.oldPassword).errorMsg
       ),
   },
 });
@@ -73,14 +82,17 @@ const passwordVerify = new InputComponent("div", {
   },
   events: {
     input: (event: Event) => {
-      form.verifyPas = (event.target as HTMLInputElement).value;
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        form.verifyPas = target.value;
+      }
     },
 
     focusout: () =>
       setValidationProps(
         passwordVerify,
         form.verifyPas,
-        validatorService.checkPasswordVerify(form.newPas, form.verifyPas)
+        validatorService.checkPasswordVerify(form.newPassword, form.verifyPas)
           .errorMsg
       ),
   },
@@ -89,42 +101,11 @@ const passwordVerify = new InputComponent("div", {
 const inputs = [oldPassword, newPassword, passwordVerify];
 
 const button = new ButtonComponent("div", {
-  link: "chats",
   text: "Save",
   additionalClass: "button-filled",
+  type: "submit",
   attr: {
     class: "button-wrapper",
-  },
-  events: {
-    click: (event: Event) => {
-      const isOldPassValid = validatorService.checkPassword(
-        form.oldPas
-      ).errorMsg;
-      const isNewPassValid = validatorService.checkPassword(
-        form.newPas
-      ).errorMsg;
-      const isPasVeryValid = validatorService.checkPasswordVerify(
-        form.newPas,
-        form.verifyPas
-      ).errorMsg;
-
-      if (isOldPassValid || isNewPassValid || isPasVeryValid) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (isOldPassValid) {
-          setValidationProps(oldPassword, form.oldPas, isOldPassValid);
-        }
-        if (isNewPassValid) {
-          setValidationProps(newPassword, form.newPas, isNewPassValid);
-        }
-        if (isPasVeryValid) {
-          setValidationProps(passwordVerify, form.verifyPas, isPasVeryValid);
-        }
-      }
-
-      console.log(form);
-    },
   },
 });
 const avatar = new AvatarComponent("div", {
@@ -140,8 +121,65 @@ export class ProfilePasswordPageComponent extends Block {
       attr: {
         class: "profile-change-page-wrapper",
       },
+      events: {
+        submit: (event: Event) => {
+          event.preventDefault();
+          const isOldPassValid = validatorService.checkPassword(
+            form.oldPassword
+          ).errorMsg;
+          const isNewPassValid = validatorService.checkPassword(
+            form.newPassword
+          ).errorMsg;
+          const isPasVeryValid = validatorService.checkPasswordVerify(
+            form.newPassword,
+            form.verifyPas
+          ).errorMsg;
+
+          if (isOldPassValid || isNewPassValid || isPasVeryValid) {
+            event.stopPropagation();
+
+            if (isOldPassValid) {
+              setValidationProps(oldPassword, form.oldPassword, isOldPassValid);
+            }
+            if (isNewPassValid) {
+              setValidationProps(newPassword, form.newPassword, isNewPassValid);
+            }
+            if (isPasVeryValid) {
+              setValidationProps(
+                passwordVerify,
+                form.verifyPas,
+                isPasVeryValid
+              );
+            }
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { verifyPas, ...passwordData } = form;
+            UserService.changeUserPassword(passwordData).then((response) => {
+              if (response === "OK") {
+                Router.getInstance().go(RoutesLinks.chats);
+              } else {
+                passwordVerify.setProps({
+                  errorText: "Check entered passwords",
+                });
+              }
+            });
+          }
+        },
+      },
+    });
+    window.store.on("Updated", this.updateProps.bind(this));
+    this.updateProps();
+  }
+
+  updateProps(): void {
+    avatar.setProps({
+      avatarLink: window.store.getState().user?.avatar
+        ? "https://ya-praktikum.tech/api/v2/resources/" +
+          window.store.getState().user?.avatar
+        : "/Union.png",
     });
   }
+
   render(): DocumentFragment {
     return this.compile(ProfilePasswordPage);
   }

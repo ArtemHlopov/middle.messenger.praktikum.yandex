@@ -1,0 +1,94 @@
+@use "../../../style.scss" as style;
+
+.msg-block,
+.msg-wrapper {
+  @include style.text;
+
+  display: flex;
+  gap: 1rem;
+}
+
+.msg-block {
+  max-width: 40%;
+  padding: 0.5rem;
+  border-radius: 10px;
+  background-color: style.$msg-grey;
+}
+
+.msg-wrapper {
+  width: 100%;
+  margin-bottom: 0.3rem;
+
+  &.user-msg {
+    justify-content: flex-end;
+
+    & .msg-block {
+      background-color: style.$msg-blue;
+    }
+  }
+}
+
+.current-chat {
+  max-height: 75dvh;
+  overflow-y: auto;
+}
+
+.new-message-block {
+  @include style.flex($gap: 10px, $justify: space-between);
+
+  margin: 11px 0;
+
+  .input {
+    @include style.text($size: 12px, $line-height: 12px);
+
+    border-radius: 30px;
+    padding: 10px 20px;
+    text-align: left;
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .button-wrapper {
+    width: auto;
+
+    button {
+      color: style.$white;
+      font-size: 28px;
+      background-color: style.$blue;
+      border-radius: 50%;
+      cursor: pointer;
+      padding-bottom: 22px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .new-msg-button {
+    @include style.flex($justify: center, $align: center);
+
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+
+    &.add-file {
+      background-image: url("/add-file.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
+    }
+  }
+}
+
+.msg-time {
+  font-size: 9px;
+}

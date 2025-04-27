@@ -4,7 +4,8 @@
   margin-right: 10px;
 }
 
-.avatar-field {
+.avatar-field,
+.avatar-wrapper {
   width: 47px;
   height: 47px;
   border-radius: 50%;
@@ -18,4 +19,10 @@
   height: 130px;
   border-radius: 50%;
   background-color: style.$bgc-grey;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 50%;
 }

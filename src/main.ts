@@ -1,39 +1,41 @@
 import "./style.scss";
-import { PagesNames } from "./shared/models/models";
-import { Block } from "./shared/components/block";
+import { RoutesLinks } from "./shared/models/models";
 import { pagesList } from "./pages";
+import { Router } from "./router/router";
+import { Store } from "./store/store";
+import { ChatWebSocket } from "./store/socket";
+import * as AuthService from "./shared/services/auth-service";
 
-const root = "#app";
-
-function initApp(): void {
-  const currentPage = window.location.pathname.slice(1) || PagesNames.login;
-  if (currentPage in pagesList) {
-    render(root, pagesList[currentPage as keyof typeof pagesList]);
-  } else {
-    render(root, pagesList.clientError);
+declare global {
+  interface Window {
+    store: Store;
+    socket: ChatWebSocket;
   }
 }
 
-document.addEventListener("click", (e: Event) => {
-  const target = e.target as HTMLElement;
-  const link = target.getAttribute("page-link");
-  if (link && link in pagesList) {
-    render(root, pagesList[link as keyof typeof pagesList]);
-  }
+window.store = new Store({
+  user: null,
+  chats: [],
+  pickedChat: null,
+  tokenChat: "",
 });
 
-function render(selector: string, block: Block): Element | null {
-  const root = document.querySelector(selector);
-  const content = block.getContent();
-
-  if (content && root) {
-    root.innerHTML = "";
-    root.appendChild(content);
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await AuthService.userInfo();
+  } catch (error) {
+    console.log("Auth failed", error);
+  } finally {
+    const router = new Router();
+    router
+      .use(RoutesLinks.login, pagesList.login)
+      .use(RoutesLinks.registration, pagesList.registration)
+      .use(RoutesLinks.chats, pagesList.chats)
+      .use(RoutesLinks.profile, pagesList.profile)
+      .use(RoutesLinks.changeProfile, pagesList.changeProfile)
+      .use(RoutesLinks.changePassword, pagesList.changePassword)
+      .use(RoutesLinks.serverError, pagesList.serverError)
+      .use(RoutesLinks.clientError, pagesList.clientError)
+      .start();
   }
-
-  block.dispatchComponentDidMount();
-
-  return root;
-}
-
-initApp();
+});

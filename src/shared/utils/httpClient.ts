@@ -5,13 +5,14 @@ const enum RequestsMethods {
   DELETE = "DELETE",
 }
 
-type RequestBody = Record<string, unknown>;
+export type RequestBody = Record<string, unknown>;
 
 type Options = {
   headers?: Record<string, string>;
   method?: string;
   data?: RequestBody;
   timeout?: number;
+  credentials?: string;
 };
 
 type HTTPMethod = <T = unknown>(url: string, options?: Options) => Promise<T>;
@@ -19,7 +20,11 @@ type HTTPMethod = <T = unknown>(url: string, options?: Options) => Promise<T>;
 const queryStringify = (data: RequestBody): string => {
   const keys = Object.keys(data);
   return keys.reduce((result, key, index) => {
-    return `${result}${key}=${data[key]}${index < keys.length - 1 ? "&" : ""}`;
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(String(data[key]));
+    return `${result}${encodedKey}=${encodedValue}${
+      index < keys.length - 1 ? "&" : ""
+    }`;
   }, "?");
 };
 
@@ -41,7 +46,7 @@ export class HTTPTransport {
     options: {
       headers?: Record<string, string>;
       method?: RequestsMethods;
-      data?: RequestBody;
+      data?: RequestBody | FormData;
       timeout?: number;
     }
   ): Promise<T> {
@@ -56,12 +61,21 @@ export class HTTPTransport {
       const xhr = new XMLHttpRequest();
       const isGet = method === RequestsMethods.GET;
 
-      xhr.open(method, isGet && data ? `${url}${queryStringify(data)}` : url);
+      xhr.open(
+        method,
+        isGet && data && !(data instanceof FormData)
+          ? `${url}${queryStringify(data)}`
+          : url
+      );
 
-      Object.keys(headers).forEach((key) => {
-        xhr.setRequestHeader(key, headers[key]);
-      });
+      xhr.withCredentials = true;
 
+      const isFormData = data instanceof FormData;
+      if (!isFormData) {
+        Object.keys(headers).forEach((key) => {
+          xhr.setRequestHeader(key, headers[key]);
+        });
+      }
       xhr.onload = () => {
         try {
           const contentType = xhr.getResponseHeader("Content-Type") || "";
@@ -90,9 +104,13 @@ export class HTTPTransport {
 
       if (isGet || !data) {
         xhr.send();
+      } else if (isFormData) {
+        xhr.send(data as FormData);
       } else {
         xhr.send(JSON.stringify(data));
       }
     });
   }
 }
+
+export default new HTTPTransport();

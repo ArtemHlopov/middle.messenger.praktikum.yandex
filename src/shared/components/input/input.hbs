@@ -1,10 +1,10 @@
-  {{#if labelText}}<label for={{id}} class="label">{{labelText}}</label>{{/if}}
+  {{#if labelText}}<label {{#if id}}for="{{id}}"{{/if}} class="label">{{labelText}}</label>{{/if}}
   <input
-    type={{type}}
-    name={{name}}
+    type="{{type}}"
+    name="{{name}}"
     class="input {{#if additionalClass}}{{additionalClass}}{{/if}}"
-    {{#if placeholder}}placeholder={{placeholder}}{{/if}}
-    {{#if value}}value={{value}}{{/if}}
-    {{#if disabled}}disabled={{disabled}}{{/if}}
+    {{#if placeholder}}placeholder="{{placeholder}}"{{/if}}
+    {{#if value}}value="{{value}}"{{/if}}
+    {{#if disabled}}disabled="{{disabled}}"{{/if}}
     />
     <div class="validation-error">{{errorText}}</div>

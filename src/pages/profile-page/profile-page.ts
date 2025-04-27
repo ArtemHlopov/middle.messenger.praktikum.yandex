@@ -4,6 +4,9 @@ import { Block } from "../../shared/components/block";
 import { InputComponent } from "../../shared/components/input/input";
 import { ButtonComponent } from "../../shared/components/button/button";
 import { AvatarComponent } from "../../shared/components/avatar/avatar";
+import { Router } from "../../router/router";
+import { RoutesLinks } from "../../shared/models/models";
+import * as AuthService from "../../shared/services/auth-service";
 
 const email = new InputComponent("div", {
   type: "text",
@@ -17,6 +20,7 @@ const email = new InputComponent("div", {
     class: "profile-form-control",
   },
 });
+
 const login = new InputComponent("div", {
   type: "text",
   labelText: "Login",
@@ -28,6 +32,7 @@ const login = new InputComponent("div", {
     class: "profile-form-control",
   },
 });
+
 const firstName = new InputComponent("div", {
   type: "text",
   labelText: "First name",
@@ -39,6 +44,7 @@ const firstName = new InputComponent("div", {
     class: "profile-form-control",
   },
 });
+
 const secondName = new InputComponent("div", {
   type: "text",
   labelText: "Second name",
@@ -50,22 +56,12 @@ const secondName = new InputComponent("div", {
     class: "profile-form-control",
   },
 });
-const nickName = new InputComponent("div", {
-  type: "text",
-  labelText: "Nickname",
-  name: "display_name",
-  value: "Ivan",
-  disabled: "true",
-  attr: {
-    "custom-id": "display_name",
-    class: "profile-form-control",
-  },
-});
+
 const phone = new InputComponent("div", {
   type: "text",
   labelText: "Phone",
   name: "phone",
-  value: "+7(909)9673030",
+  value: "+7(000)0000000",
   disabled: "true",
   attr: {
     "custom-id": "phone",
@@ -79,19 +75,44 @@ const changeProfileButton = new ButtonComponent("div", {
   attr: {
     class: "button-wrapper",
   },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.changeProfile),
+  },
 });
+
 const changePasswordButton = new ButtonComponent("div", {
   link: "changePassword",
   text: "Change password",
   attr: {
     class: "button-wrapper",
   },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.changePassword),
+  },
 });
-const gotToChartsButton = new ButtonComponent("div", {
+
+const gotToChatsButton = new ButtonComponent("div", {
   link: "chats",
   text: "Close",
   attr: {
     class: "button-wrapper",
+  },
+  events: {
+    click: () => Router.getInstance().go(RoutesLinks.chats),
+  },
+});
+
+const logoutButton = new ButtonComponent("div", {
+  link: "login",
+  text: "Logout",
+  attr: {
+    class: "button-wrapper",
+  },
+  events: {
+    click: () => {
+      AuthService.logout();
+      Router.getInstance().go(RoutesLinks.login);
+    },
   },
 });
 
@@ -100,8 +121,14 @@ const avatar = new AvatarComponent("div", {
   additionalClass: "avatar-large",
 });
 
-const inputs = [email, login, firstName, secondName, nickName, phone];
-const buttons = [changeProfileButton, changePasswordButton, gotToChartsButton];
+const inputs = [email, login, firstName, secondName, phone];
+const buttons = [
+  changeProfileButton,
+  changePasswordButton,
+  gotToChatsButton,
+  logoutButton,
+];
+
 export class ProfilePageComponent extends Block {
   constructor() {
     super("div", {
@@ -113,7 +140,25 @@ export class ProfilePageComponent extends Block {
         class: "profile-page-wrapper",
       },
     });
+    window.store.on("Updated", this.updateProps.bind(this));
+    this.updateProps();
   }
+
+  updateProps(): void {
+    this.setProps({ title: window.store.getState().user?.first_name });
+    email.setProps({ value: window.store.getState().user?.email });
+    login.setProps({ value: window.store.getState().user?.login });
+    firstName.setProps({ value: window.store.getState().user?.first_name });
+    secondName.setProps({ value: window.store.getState().user?.second_name });
+    phone.setProps({ value: window.store.getState().user?.phone });
+    avatar.setProps({
+      avatarLink: window.store.getState().user?.avatar
+        ? "https://ya-praktikum.tech/api/v2/resources/" +
+          window.store.getState().user?.avatar
+        : "/Union.png",
+    });
+  }
+
   render(): DocumentFragment {
     return this.compile(ProfilePage);
   }
