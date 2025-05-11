@@ -111,4 +111,9 @@ export class Router {
     }
     return Router.instance;
   }
+
+  //only for tests
+  static _resetInstanceForTests() {
+    Router.instance = null;
+  }
 }
